@@ -6,71 +6,60 @@
 <title>Makan apa-lahhh!</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --sky:#DFF2FF; --sun:#FFD34E; --coral:#FF8C70; --mint:#D7F3E4; --lav:#E9E2FF; --navy:#203D68;
-  --bg:#DFF2FF; --card:#ffffff; --text:#203D68; --muted:#52688a; --line:#c9dcef;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){--bg:#14233b;--card:#1d3355;--text:#eaf3ff;--muted:#a9bdd9;--line:#2f4a75}
-}
-:root[data-theme="dark"]{--bg:#14233b;--card:#1d3355;--text:#eaf3ff;--muted:#a9bdd9;--line:#2f4a75}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root{--navy:#203D68;--sun:#FFD34E;--coral:#FF8C70;--bg:#DFF2FF;--card:#fff;--text:#203D68;--muted:#52688a;--line:#c9dcef;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#14233b;--card:#1d3355;--text:#eaf3ff;--muted:#a9bdd9;--line:#2f4a75}h1{color:var(--sun)!important}}
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:520px;margin:0 auto;padding:16px}
 h1,h2{font-family:"Baloo 2",system-ui,sans-serif;line-height:1.1;margin:0}
 header{text-align:center;padding:8px 0 4px}
-h1{font-size:clamp(40px,12vw,56px);font-weight:800;color:var(--navy)}
-@media (prefers-color-scheme:dark){h1{color:var(--sun)}}
-h1 span{color:var(--coral)}
+h1{font-size:clamp(38px,11vw,54px);font-weight:800;color:var(--navy)}h1 span{color:var(--coral)}
 .tag{display:inline-block;background:var(--navy);color:#fff;border-radius:8px;padding:2px 14px;font-weight:700;margin:6px 0}
 .sub{color:var(--muted);margin:4px 0 0}
-.card{background:var(--card);border-radius:22px;padding:16px;margin-top:14px;box-shadow:0 4px 14px rgba(32,61,104,.10)}
-.label{font-weight:700;font-size:14px;margin:0 0 8px;color:var(--muted)}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{min-height:44px;padding:0 16px;border-radius:999px;border:2px solid var(--line);background:var(--lav);color:#203D68;font:inherit;font-weight:700;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
-.chip[aria-pressed="true"]::before{content:"✓ "}
-input[type=text]{width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;background:var(--card);color:var(--text)}
-button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
-.hint{font-size:13px;color:var(--muted);margin:6px 0 0}
-.wheelbox{position:relative;max-width:340px;margin:8px auto 0}
-.wheelbox canvas{width:100%;height:auto;display:block;border-radius:50%;box-shadow:0 6px 18px rgba(32,61,104,.25);border:6px solid var(--navy)}
-.pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:30px solid var(--coral);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));z-index:2}
-.hub{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:24px;border:4px solid #fff}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:16px;border:0;font:inherit;font-weight:800;font-size:18px;cursor:pointer;text-decoration:none;text-align:center}
-.primary{background:var(--navy);color:#fff}
-.sun{background:var(--sun);color:#203D68}
-.coral{background:var(--coral);color:#203D68}
-.ghost{background:var(--lav);color:#203D68;font-size:16px;font-weight:700}
-.btn:disabled{opacity:.6;cursor:wait}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-#result{background:var(--mint);color:#203D68;text-align:center}
-#result .big{font-family:"Baloo 2",system-ui,sans-serif;font-size:34px;font-weight:800;line-height:1.1;margin:4px 0}
-#result .emoji{font-size:48px}
-#result .small{font-size:14px;margin:0}
-.saved-item{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding:8px 0}
-.saved-item:first-of-type{border-top:0}
-.saved-item a{color:var(--text);font-weight:700}
-.saved-item button{min-height:44px;min-width:44px;border:0;background:transparent;font-size:18px;cursor:pointer;color:var(--text)}
-footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s}
-.toast.show{opacity:1}
-[hidden]{display:none!important}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 .nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:84px;border-radius:18px;padding:10px;text-decoration:none;color:#203D68;font-weight:800;text-align:center;box-shadow:0 3px 10px rgba(32,61,104,.12)}
 .nav a span{font-size:28px}
+.card{background:var(--card);border-radius:22px;padding:16px;margin-top:14px;box-shadow:0 4px 14px rgba(32,61,104,.10)}
+.label{font-weight:700;font-size:14px;margin:0 0 8px;color:var(--muted)}
+.lab{display:block;font-weight:700;font-size:14px;margin:12px 0 6px}
 .small{font-size:14px;margin:0}
-.lab{display:block;font-weight:700;font-size:14px;margin:12px 0 6px;color:#203D68}
-.order{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;margin-top:8px;color:#203D68}
-.acts{display:flex;gap:6px;flex-shrink:0}
-.acts .btn{width:auto;min-height:44px;padding:0 14px;font-size:15px}
+.hint{font-size:13px;color:var(--muted);margin:6px 0 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip,.chk{min-height:44px;padding:0 14px;border-radius:999px;border:2px solid var(--line);background:#E9E2FF;color:#203D68;font:inherit;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chip[aria-pressed="true"]::before{content:"✓ "}
+.chk input{width:20px;height:20px;accent-color:#203D68}
+.chk:has(input:checked){background:var(--sun);border-color:#203D68}
+input[type=text],input[type=datetime-local],input[type=tel]{width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;background:var(--card);color:var(--text)}
+button:focus-visible,input:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.wheelbox{position:relative;max-width:340px;margin:8px auto 0}
+.wheelbox canvas{width:100%;height:auto;display:block;border-radius:50%;box-shadow:0 6px 18px rgba(32,61,104,.25);border:6px solid var(--navy)}
+.pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);border-left:16px solid transparent;border-right:16px solid transparent;border-top:30px solid var(--coral);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));z-index:2}
+.hub{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:24px;border:4px solid #fff}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:16px;border:0;font:inherit;font-weight:800;font-size:18px;cursor:pointer;text-decoration:none;text-align:center}
+.primary{background:var(--navy);color:#fff}.sun{background:var(--sun);color:#203D68}.coral{background:var(--coral);color:#203D68}.ghost{background:#E9E2FF;color:#203D68;font-size:16px;font-weight:700}
+.btn:disabled{opacity:.6;cursor:wait}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+#result{background:#D7F3E4;color:#203D68;text-align:center}
+#result .big{font-family:"Baloo 2",system-ui,sans-serif;font-size:34px;font-weight:800;line-height:1.1;margin:4px 0}
+#result .emoji{font-size:48px}
+.saved-item{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding:8px 0}
+.saved-item:first-of-type{border-top:0}.saved-item a{color:var(--text);font-weight:700}
+.saved-item button{min-height:44px;min-width:44px;border:0;background:transparent;font-size:18px;cursor:pointer;color:var(--text)}
+#group{background:#E9E2FF;color:#203D68}#group .hint{color:#4a5f80}
+.order{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;margin-top:8px}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.acts .btn,.acts a.btn{width:auto;min-height:44px;padding:0 14px;font-size:15px}
 .empty{border:2px dashed #b9c6e6;border-radius:16px;padding:16px;text-align:center;background:#fff;margin-top:12px;color:#52688a}
-#group .hint{color:#4a5f80}
+.who{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.who .btn{width:auto;min-height:44px;padding:0 14px;font-size:14px}
+dialog{border:0;border-radius:22px;padding:20px;max-width:380px;width:calc(100% - 32px);background:var(--card);color:var(--text)}
+dialog::backdrop{background:rgba(10,20,40,.6)}
+footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:18px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center;z-index:50}
+.toast.show{opacity:1}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -82,30 +71,33 @@ html{scroll-behavior:smooth}
   </header>
   <nav class="nav" aria-label="Quick actions">
     <a href="#locate" style="background:#CFE8FA"><span>📍</span>Locate Me</a>
-    <a href="#types" style="background:#FFD9D2"><span>🍴</span>Food Type</a>
+    <a href="#types" style="background:#FFD9D2"><span>☑️</span>Food Types</a>
     <a href="#wheelCard" style="background:#FFE59A"><span>🎲</span>Surprise Me</a>
     <a href="#group" style="background:#E9E2FF"><span>👥</span>Group Orders</a>
   </nav>
 
-  <section class="card" aria-labelledby="mealLabel">
+  <section class="card">
     <p class="label" id="mealLabel">What are you eating?</p>
     <div class="chips" id="meals" role="group" aria-labelledby="mealLabel"></div>
     <p class="label" style="margin-top:14px"><label for="area">Where? <span style="font-weight:400">(optional)</span></label></p>
     <input type="text" id="area" placeholder="Leave blank to use “near me”" autocomplete="off">
-    <p class="hint">Type an area like “Jalan Duta” if you want to search somewhere else.</p>
+    <p class="hint">Type an area like “Jalan Duta” to search somewhere else.</p>
   </section>
 
   <section class="card" id="locate">
     <h2 style="font-size:24px">📍 Locate Me</h2>
-    <p class="small" style="margin:6px 0 12px">Tap the button and your browser will ask to share your location. It’s only used to open Google Maps around you. Nothing is stored.</p>
+    <p class="small" style="margin:6px 0 12px">We’ll ask your permission first. Your location is only used to open Google Maps around you and is never saved.</p>
     <button class="btn sun" id="locBtn">📍 Use my location</button>
     <p class="hint" id="locMsg" role="status"></p>
     <a class="btn ghost" id="nearBtn" href="#" target="_blank" rel="noopener" style="margin-top:8px">🍴 Browse eateries nearby</a>
   </section>
 
   <section class="card" id="types">
-    <h2 style="font-size:24px">🍴 Pick a food type</h2>
-    <div class="chips" id="types2" style="margin-top:10px"></div>
+    <h2 style="font-size:24px">☑️ Food types</h2>
+    <p class="small" style="margin:6px 0 10px">Tick what you feel like. Only ticked types appear on the wheel.</p>
+    <div class="chips" id="types2"></div>
+    <div class="row"><button class="btn ghost" id="allBtn">Tick all</button><button class="btn ghost" id="noneBtn">Clear</button></div>
+    <p class="hint">“Halal” searches use the word halal on Google Maps. Always check the halal certificate on the listing.</p>
   </section>
 
   <section class="card" id="wheelCard" aria-labelledby="spinTitle">
@@ -115,39 +107,54 @@ html{scroll-behavior:smooth}
       <canvas id="wheel" width="680" height="680" role="img" aria-label="Food wheel"></canvas>
       <div class="hub" aria-hidden="true">🍽️</div>
     </div>
-    <div style="margin-top:16px">
-      <button class="btn sun" id="spin">🎡 Surprise Me!</button>
-    </div>
+    <div style="margin-top:16px"><button class="btn sun" id="spin">🎡 Surprise Me!</button></div>
   </section>
 
   <section class="card" id="result" aria-live="polite" hidden>
     <div class="emoji" id="rEmoji"></div>
     <p class="small" id="rCat"></p>
     <div class="big" id="rDish"></div>
-    <p class="small" id="rNote">Tap below to see places nearby.</p>
-    <div style="margin-top:14px">
-      <a class="btn primary" id="mapBtn" href="#" target="_blank" rel="noopener">📍 Find it on Google Maps</a>
-    </div>
-    <div class="row">
-      <button class="btn ghost" id="saveBtn">♡ Save</button>
-      <button class="btn ghost" id="skipBtn">⏭ Skip</button>
-    </div>
+    <p class="small">Tap below to see places nearby.</p>
+    <div style="margin-top:14px"><a class="btn primary" id="mapBtn" href="#" target="_blank" rel="noopener">📍 Find it on Google Maps</a></div>
+    <div class="row"><button class="btn ghost" id="saveBtn">♡ Save</button><button class="btn ghost" id="skipBtn">⏭ Skip</button></div>
   </section>
 
-  <section class="card" id="group" style="background:#E9E2FF;color:#203D68">
+  <section class="card" id="group">
     <p class="small" style="font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a6fa5">Eat together, order together</p>
     <h2 style="font-size:28px">Group orders</h2>
-    <p class="small" style="margin-top:6px">Share a GrabFood or other group order link, choose when to close it, and let everyone know when to add their food.</p>
-    <label class="lab" for="oName">Order name</label>
-    <input type="text" id="oName" placeholder="e.g. Friday lunch" maxlength="60">
-    <label class="lab" for="oLink">Group order link</label>
-    <input type="text" id="oLink" inputmode="url" placeholder="Paste a https:// link">
-    <label class="lab" for="oTime">Order closes at</label>
-    <input type="datetime-local" id="oTime" style="width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;background:var(--card);color:var(--text)">
-    <div style="margin-top:12px"><button class="btn primary" id="postBtn">＋ Post order</button></div>
-    <p class="hint" id="oMsg" role="alert"></p>
-    <div id="orderList"></div>
-    <p class="hint" id="boardNote">Saved on this device only. The shared board isn’t available in this view.</p>
+
+    <div id="gSetup" hidden><p class="small" style="margin-top:8px">The shared board isn’t connected yet. Follow FIREBASE_SETUP.md, then paste your config into index.html.</p><p class="hint" id="setupMsg"></p></div>
+
+    <div id="gOut" hidden>
+      <p class="small" style="margin:6px 0 12px">Sign in with your Google (Gmail) account to see and post group orders.</p>
+      <button class="btn primary" id="signIn">Sign in with Google</button>
+    </div>
+
+    <div id="gProfile" hidden>
+      <p class="small" style="margin-top:6px">One last step. This is what your crew will see.</p>
+      <label class="lab" for="pNick">Nickname</label>
+      <input type="text" id="pNick" maxlength="20" placeholder="e.g. Kak Ina" autocomplete="nickname">
+      <label class="lab" for="pPhone">WhatsApp number</label>
+      <input type="tel" id="pPhone" placeholder="e.g. 012-345 6789" autocomplete="tel">
+      <label style="display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:14px"><input type="checkbox" id="pConsent" style="width:22px;height:22px;flex:none;margin-top:2px">I agree my nickname and WhatsApp number are shown to everyone signed in to this page, so they can contact me about my orders.</label>
+      <div style="margin-top:12px"><button class="btn primary" id="profSave">Save and continue</button></div>
+      <p class="hint" id="pMsg" role="alert"></p>
+    </div>
+
+    <div id="gIn" hidden>
+      <div class="who"><strong id="hello"></strong><span><button class="btn ghost" id="editProf">Edit</button> <button class="btn ghost" id="signOut">Sign out</button></span></div>
+      <label class="chk" style="margin-top:10px;background:#fff"><input type="checkbox" id="notifyChk"> 🔔 Notify me of new group orders</label>
+      <label class="lab" for="oName">Order name</label>
+      <input type="text" id="oName" placeholder="e.g. Friday lunch" maxlength="60">
+      <label class="lab" for="oLink">Group order link</label>
+      <input type="text" id="oLink" inputmode="url" placeholder="Paste a https:// link">
+      <label class="lab" for="oTime">Order closes at</label>
+      <input type="datetime-local" id="oTime">
+      <div style="margin-top:12px"><button class="btn primary" id="postBtn">＋ Post order</button></div>
+      <p class="hint" id="oMsg" role="alert"></p>
+      <div id="orderList"></div>
+      <p class="hint">Everyone signed in sees open orders. Posts disappear after their closing time.</p>
+    </div>
   </section>
 
   <section class="card" id="savedCard" hidden>
@@ -155,243 +162,295 @@ html{scroll-behavior:smooth}
     <div id="savedList"></div>
   </section>
 
-  <footer>Free • no login • your saved list stays on this phone only</footer>
+  <footer>Free • saved food stays on this phone</footer>
 </div>
+
+<dialog id="locDlg" aria-labelledby="locT">
+  <h2 id="locT" style="font-size:24px">Allow location?</h2>
+  <p>Makan apa-lahhh! would like to use your current location to open Google Maps around you. It isn’t saved or shared.</p>
+  <div class="row"><button class="btn ghost" id="locNo">Not now</button><button class="btn primary" id="locYes">Allow</button></div>
+</dialog>
 <div class="toast" id="toast" role="status"></div>
 
-<script>
-// ---------- Food data: edit freely ----------
-// meals: b = breakfast, l = lunch, d = dinner
-const FOOD = {
-  "Rice":     {e:"🍚", dishes:[["Nasi lemak","bld"],["Nasi ayam","ld"],["Nasi campur","ld"],["Nasi kandar","ld"],["Nasi goreng","bld"],["Nasi kerabu","bl"]]},
-  "Noodles":  {e:"🍜", dishes:[["Mee goreng mamak","bld"],["Laksa","ld"],["Mee kari","bl"],["Pan mee","bl"],["Wantan mee","bld"],["Kuey teow goreng","ld"],["Mee rebus","bl"]]},
-  "Chicken":  {e:"🍗", dishes:[["Ayam goreng","ld"],["Chicken rice","ld"],["Ayam percik","ld"],["Satay","d"],["Korean fried chicken","d"]]},
-  "Healthy":  {e:"🥗", dishes:[["Salad bowl","ld"],["Grilled chicken bowl","ld"],["Yong tau foo","ld"],["Poke bowl","ld"],["Bubur ayam","bl"]]},
-  "Roti & Bites": {e:"🥪", dishes:[["Roti canai","bd"],["Roti telur","b"],["Roti bakar kaya","b"],["Dim sum","bl"],["Popiah","d"],["Capati","bd"]]},
-  "Soup":     {e:"🍲", dishes:[["Soto ayam","ld"],["Bak kut teh","bld"],["Sup tulang","d"],["Tom yam","ld"],["Sup kambing","ld"]]},
-  "Western":  {e:"🍔", dishes:[["Burger","ld"],["Pasta","ld"],["Sandwich","bl"],["Steak","d"],["Fish and chips","ld"],["Pancakes","b"]]}
+<script type="module">
+// ===== 1) PASTE YOUR FIREBASE CONFIG HERE (see FIREBASE_SETUP.md) =====
+const firebaseConfig = {
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
+  projectId: "PASTE_PROJECT_ID",
+  appId: "PASTE_APP_ID"
 };
-const SURPRISE = "Surprise Special";
-const COLORS = ["#FFD34E","#FF8C70","#D7F3E4","#E9E2FF","#DFF2FF","#FFE59A","#FFB3A0","#BFE8D2"];
-const MEALS = [["b","🍳 Breakfast"],["l","🥘 Lunch"],["d","🌙 Dinner"],["a","🍽️ Anytime"]];
 
-// ---------- State ----------
-let meal = (()=>{const h=new Date().getHours();return h<11?"b":h<16?"l":"d"})();
-let rot = 0, spinning = false, current = null;
-const skipped = new Set();
-const $ = id => document.getElementById(id);
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// ===== 2) Food data: edit freely. meals: b=breakfast l=lunch d=dinner =====
+const FOOD = {
+  "Rice":{e:"🍚",dishes:[["Nasi lemak","bld"],["Nasi ayam","ld"],["Nasi campur","ld"],["Nasi kandar","ld"],["Nasi goreng","bld"],["Nasi kerabu","bl"]]},
+  "Noodles":{e:"🍜",dishes:[["Mee goreng mamak","bld"],["Laksa","ld"],["Mee kari","bl"],["Pan mee","bl"],["Wantan mee","bld"],["Kuey teow goreng","ld"],["Mee rebus","bl"]]},
+  "Chicken":{e:"🍗",dishes:[["Ayam goreng","ld"],["Chicken rice","ld"],["Ayam percik","ld"],["Satay","d"],["Korean fried chicken","d"]]},
+  "Healthy":{e:"🥗",dishes:[["Salad bowl","ld"],["Grilled chicken bowl","ld"],["Yong tau foo","ld"],["Poke bowl","ld"],["Bubur ayam","bl"]]},
+  "Roti & Bites":{e:"🥪",dishes:[["Roti canai","bd"],["Roti telur","b"],["Roti bakar kaya","b"],["Dim sum","bl"],["Popiah","d"],["Capati","bd"]]},
+  "Soup":{e:"🍲",dishes:[["Soto ayam","ld"],["Bak kut teh","bld"],["Sup tulang","d"],["Tom yam","ld"],["Sup kambing","ld"]]},
+  "Western":{e:"🍔",dishes:[["Burger","ld"],["Pasta","ld"],["Sandwich","bl"],["Steak","d"],["Fish and chips","ld"],["Pancakes","b"]]},
+  "Indian":{e:"🍛",dishes:[["Banana leaf rice","ld"],["Thosai","bld"],["Briyani","ld"],["Tandoori chicken and naan","ld"],["Murtabak","bld"]]},
+  "Halal":{e:"✅",dishes:[["Halal Chinese food","ld"],["Halal Japanese food","ld"],["Halal Korean food","ld"],["Halal Western food","ld"],["Halal dim sum","bl"]]},
+  "Japanese":{e:"🍣",dishes:[["Sushi","ld"],["Ramen","ld"],["Katsu curry","ld"],["Udon","ld"],["Chicken teriyaki rice","ld"],["Japanese breakfast set","b"]]},
+  "Korean":{e:"🥘",dishes:[["Bibimbap","ld"],["Tteokbokki","ld"],["Kimchi jjigae","ld"],["Korean BBQ","d"],["Jajangmyeon","ld"]]},
+  "Arabic":{e:"🥙",dishes:[["Shawarma","ld"],["Mandi rice","ld"],["Kebab","d"],["Falafel","ld"],["Mixed grill","d"]]},
+  "Coffee":{e:"☕",dishes:[["Specialty coffee","bld"],["Kopitiam kopi","b"],["Cafe brunch","bl"],["Iced latte","ld"],["Croissant and coffee","b"]]}
+};
+const SURPRISE="Surprise Special";
+const COLORS=["#FFD34E","#FF8C70","#D7F3E4","#E9E2FF","#DFF2FF","#FFE59A","#FFB3A0","#BFE8D2"];
+const MEALS=[["b","🍳 Breakfast"],["l","🥘 Lunch"],["d","🌙 Dinner"],["a","🍽️ Anytime"]];
 
-// ---------- Helpers ----------
+// ===== helpers =====
+const $=id=>document.getElementById(id);
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+function toast(msg,ms=1800){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),ms)}
+
+let meal=(()=>{const h=new Date().getHours();return h<11?"b":h<16?"l":"d"})();
+let picked=new Set(Object.keys(FOOD)), rot=0, spinning=false, current=null, loc=null;
+try{const s=JSON.parse(ls.get("jm_types")||"null");if(Array.isArray(s)){const f=s.filter(c=>FOOD[c]);if(f.length)picked=new Set(f)}}catch(e){}
+const skipped=new Set();
+const savePicked=()=>ls.set("jm_types",JSON.stringify([...picked]));
+
 function dishesFor(cat){
-  const cats = cat===SURPRISE ? Object.keys(FOOD) : [cat];
-  let out=[];
-  cats.forEach(c=>FOOD[c].dishes.forEach(([n,m])=>{
-    if(meal==="a"||m.includes(meal)) out.push({name:n,cat:c});
-  }));
+  const cats=cat===SURPRISE?[...picked]:[cat];const out=[];
+  cats.forEach(c=>FOOD[c].dishes.forEach(([n,m])=>{if(meal==="a"||m.includes(meal))out.push({name:n,cat:c})}));
   return out;
 }
-function segments(){
-  const s = Object.keys(FOOD).filter(c=>dishesFor(c).length>0);
-  s.push(SURPRISE);
-  return s;
-}
-function emoji(c){return c===SURPRISE?"🎁":FOOD[c].e}
-let loc = null;
+const segments=()=>[...Object.keys(FOOD).filter(c=>picked.has(c)&&dishesFor(c).length),SURPRISE];
+const emoji=c=>c===SURPRISE?"🎁":FOOD[c].e;
 function mapUrl(dish){
-  const area = $("area").value.trim();
-  if(!area && loc) return "https://www.google.com/maps/search/" + encodeURIComponent(dish) + "/@" + loc.lat.toFixed(5) + "," + loc.lng.toFixed(5) + ",15z";
-  const q = dish + (area ? " near " + area : " near me");
-  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+  const area=$("area").value.trim();
+  if(!area&&loc)return "https://www.google.com/maps/search/"+encodeURIComponent(dish)+"/@"+loc.lat.toFixed(5)+","+loc.lng.toFixed(5)+",15z";
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(dish+(area?" near "+area:" near me"));
 }
-function store(get,val){
-  try{ if(get) return JSON.parse(localStorage.getItem("jm_saved")||"[]"); localStorage.setItem("jm_saved",JSON.stringify(val)); }
-  catch(e){ return get?[]:null; }
-}
-function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),1800)}
 
-// ---------- Wheel ----------
+// ===== wheel =====
 function drawWheel(){
-  const c=$("wheel"), ctx=c.getContext("2d"), n=segments().length, S=c.width, r=S/2, a=2*Math.PI/n;
+  const c=$("wheel"),ctx=c.getContext("2d"),segs=segments(),n=segs.length,S=c.width,r=S/2,a=2*Math.PI/n;
   ctx.clearRect(0,0,S,S);
-  segments().forEach((cat,i)=>{
-    const start=-Math.PI/2+i*a;
-    ctx.beginPath(); ctx.moveTo(r,r); ctx.arc(r,r,r,start,start+a); ctx.closePath();
-    ctx.fillStyle=COLORS[i%COLORS.length]; ctx.fill();
-    ctx.strokeStyle="#fff"; ctx.lineWidth=4; ctx.stroke();
-    ctx.save(); ctx.translate(r,r); ctx.rotate(start+a/2);
-    ctx.fillStyle="#203D68"; ctx.textAlign="right"; ctx.textBaseline="middle";
-    ctx.font="700 34px system-ui,sans-serif";
-    ctx.fillText((cat===SURPRISE?"Surprise":cat)+" "+emoji(cat), r-26, 0);
+  segs.forEach((cat,i)=>{
+    const st=-Math.PI/2+i*a;
+    ctx.beginPath();ctx.moveTo(r,r);ctx.arc(r,r,r,st,st+a);ctx.closePath();
+    ctx.fillStyle=COLORS[i%COLORS.length];ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=4;ctx.stroke();
+    ctx.save();ctx.translate(r,r);ctx.rotate(st+a/2);
+    ctx.fillStyle="#203D68";ctx.textAlign="right";ctx.textBaseline="middle";
+    ctx.font="700 "+(n>10?27:n>6?31:34)+"px system-ui,sans-serif";
+    ctx.fillText((cat===SURPRISE?"Surprise":cat)+" "+emoji(cat),r-26,0);
     ctx.restore();
   });
 }
-function resetWheel(){
-  const c=$("wheel"); c.style.transition="none"; rot=0; c.style.transform="rotate(0deg)"; c.offsetHeight;
-}
+function resetWheel(){const c=$("wheel");c.style.transition="none";rot=0;c.style.transform="rotate(0deg)";c.offsetHeight}
 function spin(){
-  if(spinning) return;
-  const segs=segments(), n=segs.length, size=360/n, idx=Math.floor(Math.random()*n);
-  const jitter=(Math.random()-0.5)*size*0.6;
-  const target=-((idx+0.5)*size+jitter);
-  const cur=((rot%360)+360)%360;
-  let delta=((target-cur)%360+360)%360;
-  const turns=reduce?0:360*5;
-  rot+=turns+delta;
-  const dur=reduce?300:4200;
-  const c=$("wheel");
-  c.style.transition=`transform ${dur}ms cubic-bezier(.12,.6,.1,1)`;
-  c.style.transform=`rotate(${rot}deg)`;
-  spinning=true; $("spin").disabled=true; $("spin").textContent="🎡 Spinning…";
-  setTimeout(()=>{
-    spinning=false; $("spin").disabled=false; $("spin").textContent="🎡 Spin Again";
-    showResult(segs[idx]);
-  }, dur+100);
+  if(spinning)return;
+  const segs=segments(),n=segs.length,size=360/n,idx=Math.floor(Math.random()*n);
+  const target=-((idx+0.5)*size+(Math.random()-0.5)*size*0.6);
+  const cur=((rot%360)+360)%360,delta=((target-cur)%360+360)%360;
+  rot+=(reduce?0:1800)+delta;
+  const dur=reduce?300:4200,c=$("wheel");
+  c.style.transition=`transform ${dur}ms cubic-bezier(.12,.6,.1,1)`;c.style.transform=`rotate(${rot}deg)`;
+  spinning=true;$("spin").disabled=true;$("spin").textContent="🎡 Spinning…";
+  setTimeout(()=>{spinning=false;$("spin").disabled=false;$("spin").textContent="🎡 Spin Again";showResult(segs[idx])},dur+100);
 }
-
-// ---------- Result ----------
 function pick(cat){
   let pool=dishesFor(cat).filter(d=>!skipped.has(d.name));
-  if(!pool.length){ skipped.clear(); pool=dishesFor(cat); }
-  return pool[Math.floor(Math.random()*pool.length)];
+  if(!pool.length){skipped.clear();pool=dishesFor(cat)}
+  return pool.length?pool[Math.floor(Math.random()*pool.length)]:null;
 }
 function showResult(cat){
   const d=pick(cat);
-  current={cat,dish:d.name,realCat:d.cat};
-  renderResult();
+  if(!d){toast("No dishes match. Tick more food types!");return}
+  current={cat,dish:d.name,realCat:d.cat};renderResult();
   $("result").scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"});
 }
 function renderResult(){
-  $("result").hidden=false;
-  $("rEmoji").textContent=emoji(current.realCat);
+  $("result").hidden=false;$("rEmoji").textContent=emoji(current.realCat);
   $("rCat").textContent=current.cat===SURPRISE?"🎁 Surprise Special":current.cat;
-  $("rDish").textContent=current.dish;
-  $("mapBtn").href=mapUrl(current.dish);
-  const saved=store(true).includes(current.dish);
-  $("saveBtn").textContent=saved?"❤️ Saved":"♡ Save";
+  $("rDish").textContent=current.dish;$("mapBtn").href=mapUrl(current.dish);
+  $("saveBtn").textContent=savedList().includes(current.dish)?"❤️ Saved":"♡ Save";
 }
-$("area").addEventListener("input",()=>{ if(current) $("mapBtn").href=mapUrl(current.dish); renderSaved(); });
-$("skipBtn").onclick=()=>{
-  skipped.add(current.dish);
-  showResult(current.cat);
-  toast("Skipped — how about this?");
-};
+const savedList=()=>{try{return JSON.parse(ls.get("jm_saved")||"[]")}catch(e){return[]}};
+$("skipBtn").onclick=()=>{skipped.add(current.dish);showResult(current.cat);toast("Skipped. How about this?")};
 $("saveBtn").onclick=()=>{
-  let s=store(true);
-  if(s.includes(current.dish)){ s=s.filter(x=>x!==current.dish); toast("Removed from saved"); }
-  else { s.push(current.dish); toast("Saved ❤️"); }
-  store(false,s); renderResult(); renderSaved();
+  let s=savedList();
+  if(s.includes(current.dish)){s=s.filter(x=>x!==current.dish);toast("Removed from saved")}else{s.push(current.dish);toast("Saved ❤️")}
+  ls.set("jm_saved",JSON.stringify(s));renderResult();renderSaved();
 };
 function renderSaved(){
-  const s=store(true), box=$("savedList");
-  $("savedCard").hidden=!s.length;
-  box.innerHTML="";
+  const s=savedList(),box=$("savedList");$("savedCard").hidden=!s.length;box.innerHTML="";
   s.forEach(name=>{
-    const row=document.createElement("div"); row.className="saved-item";
-    const a=document.createElement("a"); a.href=mapUrl(name); a.target="_blank"; a.rel="noopener"; a.textContent="📍 "+name;
-    const b=document.createElement("button"); b.textContent="✕"; b.setAttribute("aria-label","Remove "+name);
-    b.onclick=()=>{store(false,store(true).filter(x=>x!==name)); renderSaved(); if(current) renderResult();};
-    row.append(a,b); box.append(row);
+    const row=document.createElement("div");row.className="saved-item";
+    const a=document.createElement("a");a.href=mapUrl(name);a.target="_blank";a.rel="noopener";a.textContent="📍 "+name;
+    const b=document.createElement("button");b.textContent="✕";b.setAttribute("aria-label","Remove "+name);
+    b.onclick=()=>{ls.set("jm_saved",JSON.stringify(savedList().filter(x=>x!==name)));renderSaved();if(current)renderResult()};
+    row.append(a,b);box.append(row);
   });
 }
 
-// ---------- Meal chips ----------
+// ===== meal + food type checkboxes =====
+function resetAll(){current=null;skipped.clear();$("result").hidden=true;resetWheel();drawWheel()}
 function renderMeals(){
-  const box=$("meals"); box.innerHTML="";
+  const box=$("meals");box.innerHTML="";
   MEALS.forEach(([k,label])=>{
-    const b=document.createElement("button");
-    b.className="chip"; b.textContent=label; b.setAttribute("aria-pressed",String(meal===k));
-    b.onclick=()=>{ meal=k; skipped.clear(); $("result").hidden=true; current=null; renderMeals(); resetWheel(); drawWheel(); };
-    box.append(b);
+    const b=document.createElement("button");b.className="chip";b.textContent=label;b.setAttribute("aria-pressed",String(meal===k));
+    b.onclick=()=>{meal=k;renderMeals();resetAll()};box.append(b);
   });
 }
+function renderTypes(){
+  const b=$("types2");b.innerHTML="";
+  Object.keys(FOOD).forEach(c=>{
+    const l=document.createElement("label"),i=document.createElement("input");
+    l.className="chk";i.type="checkbox";i.checked=picked.has(c);
+    i.onchange=()=>{
+      if(!i.checked&&picked.size===1){i.checked=true;toast("Keep at least one food type");return}
+      i.checked?picked.add(c):picked.delete(c);savePicked();resetAll();
+    };
+    l.append(i,document.createTextNode(FOOD[c].e+" "+c));b.append(l);
+  });
+}
+$("allBtn").onclick=()=>{picked=new Set(Object.keys(FOOD));savePicked();renderTypes();resetAll()};
+$("noneBtn").onclick=()=>{picked=new Set([[...picked][0]]);savePicked();renderTypes();resetAll();toast("Tick the types you want")};
 
-$("spin").onclick=spin;
-
-// ---------- Locate Me ----------
-function refreshNear(){ $("nearBtn").href=mapUrl("restaurants"); }
-$("area").addEventListener("input",refreshNear);
-$("locBtn").onclick=()=>{
+// ===== Locate Me with approval =====
+const refreshNear=()=>{$("nearBtn").href=mapUrl("restaurants")};
+$("area").addEventListener("input",()=>{refreshNear();if(current)$("mapBtn").href=mapUrl(current.dish);renderSaved()});
+function getLocation(){
   const m=$("locMsg");
-  if(!navigator.geolocation){ m.textContent="Location isn’t available here. Type an area above instead."; return; }
-  $("locBtn").disabled=true; m.textContent="Finding you…";
+  if(!navigator.geolocation){m.textContent="Location isn’t available on this browser. Type an area above instead.";return}
+  $("locBtn").disabled=true;m.textContent="Finding you…";
   navigator.geolocation.getCurrentPosition(p=>{
     loc={lat:p.coords.latitude,lng:p.coords.longitude};
-    $("locBtn").disabled=false; $("locBtn").textContent="📍 Location on ✓";
+    $("locBtn").disabled=false;$("locBtn").textContent="📍 Location on ✓";
     m.textContent="Got it! Maps searches will now look around you.";
-    refreshNear(); if(current) $("mapBtn").href=mapUrl(current.dish); renderSaved();
+    refreshNear();if(current)$("mapBtn").href=mapUrl(current.dish);renderSaved();
   },err=>{
     $("locBtn").disabled=false;
-    m.textContent=err.code===1?"Location was declined. No problem: type your area above, or Maps will use “near me”.":"Couldn’t get your location. Type an area above instead.";
+    m.textContent=err.code===1?"Location is blocked. Allow it in your browser settings, or type an area above.":"Couldn’t get your location. Type an area above instead.";
   },{timeout:10000,maximumAge:60000});
+}
+$("locBtn").onclick=()=>{
+  const d=$("locDlg");
+  if(typeof d.showModal==="function")d.showModal();else if(confirm("Allow Makan apa-lahhh! to use your location?"))getLocation();
+};
+$("locYes").onclick=()=>{$("locDlg").close();getLocation()};
+$("locNo").onclick=()=>{$("locDlg").close();$("locMsg").textContent="No problem. Type an area above, or Maps will use “near me”."};
+
+// ===== Group board (Firebase) =====
+let AU,FS,auth,db,user=null,profile=null,unsub=null,orders=[];
+const ready=!String(firebaseConfig.apiKey).startsWith("PASTE");
+const VIEWS=["gSetup","gOut","gProfile","gIn"];
+const view=n=>VIEWS.forEach(v=>$(v).hidden=v!==n);
+const normPhone=s=>{let d=String(s).replace(/\D/g,"");if(d.startsWith("0"))d="6"+d;return /^\d{9,15}$/.test(d)?d:null};
+const notifyOn=()=>ls.get("jm_notify")==="1";
+function askPerm(){
+  if(!("Notification" in window))return Promise.resolve(false);
+  if(Notification.permission==="granted")return Promise.resolve(true);
+  if(Notification.permission==="denied")return Promise.resolve(false);
+  return Notification.requestPermission().then(p=>p==="granted").catch(()=>false);
+}
+async function notifyOrder(o,id){
+  if(!notifyOn())return;
+  const title="🍜 New group order!",body=(o.nickname||"Someone")+": "+(o.name||"");
+  toast(title+" "+body,4500);
+  if("Notification" in window&&Notification.permission==="granted"){
+    try{const reg=await navigator.serviceWorker.getRegistration();if(reg)reg.showNotification(title,{body,tag:"order-"+id});else new Notification(title,{body})}catch(e){}
+  }
+}
+$("notifyChk").onchange=async e=>{
+  if(e.target.checked){
+    const ok=await askPerm();ls.set("jm_notify","1");
+    toast(ok?"Notifications on 🔔":"Alerts on, but only inside this page (browser notifications are blocked)",3500);
+  }else{ls.set("jm_notify","0");toast("Notifications off")}
 };
 
-// ---------- Food type ----------
-function renderTypes(){
-  const b=$("types2"); b.innerHTML="";
-  Object.keys(FOOD).forEach(c=>{
-    const x=document.createElement("button"); x.className="chip"; x.textContent=FOOD[c].e+" "+c;
-    x.onclick=()=>{ if(!dishesFor(c).length){toast("No "+c+" for this meal. Try Anytime!");return;} showResult(c); };
-    b.append(x);
-  });
-}
-
-// ---------- Group orders ----------
-let orders=[], gdb=null, me=null;
-function ldLocal(){try{return JSON.parse(localStorage.getItem("jm_orders")||"[]")}catch(e){return[]}}
-function svLocal(a){try{localStorage.setItem("jm_orders",JSON.stringify(a))}catch(e){}}
-orders=ldLocal();
-function safeUrl(u){try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}}
-function fmtLeft(ms){const m=Math.max(1,Math.round(ms/60000));return m<60?m+" min left":Math.floor(m/60)+"h "+(m%60)+"m left"}
-function delOrder(o){
-  if(gdb){ gdb.collection("orders").doc(o.id).delete().catch(()=>toast("Couldn’t delete")); }
-  else { orders=orders.filter(x=>x.id!==o.id); svLocal(orders); renderOrders(); }
-}
+const safeUrl=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}};
+const fmtLeft=ms=>{const m=Math.max(1,Math.round(ms/60000));return m<60?m+" min left":Math.floor(m/60)+"h "+(m%60)+"m left"};
 function renderOrders(){
-  const box=$("orderList"); box.innerHTML="";
-  const now=Date.now(), open=orders.filter(o=>o&&o.closesAt>now).sort((a,b)=>a.closesAt-b.closesAt);
-  if(!open.length){ const p=document.createElement("div"); p.className="empty"; p.textContent="No open group orders yet. Start one and share it with your crew!"; box.append(p); return; }
+  const box=$("orderList");box.innerHTML="";
+  const now=Date.now(),open=orders.filter(o=>o.closesAt>now).sort((a,b)=>a.closesAt-b.closesAt);
+  if(!open.length){const p=document.createElement("div");p.className="empty";p.textContent="No open group orders yet. Start one and share it with your crew!";box.append(p);return}
   open.forEach(o=>{
-    const row=document.createElement("div"); row.className="order";
-    const info=document.createElement("div"), t=document.createElement("strong"), s=document.createElement("div");
-    t.textContent=String(o.name||"Group order"); s.className="small";
+    const row=document.createElement("div");row.className="order";
+    const info=document.createElement("div"),t=document.createElement("strong"),s=document.createElement("div"),w=document.createElement("div");
+    t.textContent=String(o.name||"Group order");s.className="small";w.className="small";
     s.textContent="⏰ "+fmtLeft(o.closesAt-now)+" · closes "+new Date(o.closesAt).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
-    info.append(t,s);
-    const acts=document.createElement("div"); acts.className="acts";
+    const ph=/^\d{9,15}$/.test(String(o.phone))?String(o.phone):null;
+    w.textContent="👤 "+String(o.nickname||"")+(ph?" · 📱 +"+ph:"");
+    info.append(t,s,w);
+    const acts=document.createElement("div");acts.className="acts";
     const href=safeUrl(String(o.link||""));
-    if(href){ const a=document.createElement("a"); a.className="btn coral"; a.href=href; a.target="_blank"; a.rel="noopener noreferrer"; a.textContent="Add my food"; acts.append(a); }
-    if(!gdb || (o.by && o.by===me)){ const d=document.createElement("button"); d.className="btn ghost"; d.textContent="✕"; d.setAttribute("aria-label","Delete "+t.textContent); d.onclick=()=>delOrder(o); acts.append(d); }
-    row.append(info,acts); box.append(row);
+    if(href){const a=document.createElement("a");a.className="btn coral";a.href=href;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Add my food";acts.append(a)}
+    if(ph){const a=document.createElement("a");a.className="btn ghost";a.href="https://wa.me/"+ph;a.target="_blank";a.rel="noopener noreferrer";a.textContent="💬 WhatsApp";acts.append(a)}
+    if(user&&o.uid===user.uid){const d=document.createElement("button");d.className="btn ghost";d.textContent="✕";d.setAttribute("aria-label","Delete "+t.textContent);d.onclick=()=>FS.deleteDoc(FS.doc(db,"orders",o.id)).catch(()=>toast("Couldn’t delete"));acts.append(d)}
+    row.append(info,acts);box.append(row);
   });
 }
-$("postBtn").onclick=async()=>{
-  const msg=$("oMsg"), name=$("oName").value.trim(), link=safeUrl($("oLink").value.trim()), t=new Date($("oTime").value).getTime();
-  if(!name){msg.textContent="Give your order a name.";return}
-  if(!link){msg.textContent="Paste a full https:// link.";return}
-  if(!(t>Date.now())){msg.textContent="Pick a closing time in the future.";return}
-  msg.textContent="";
-  const o={name:name.slice(0,60),link,closesAt:t,by:me||null,createdAt:Date.now()};
+function subscribe(){
+  let first=true;
+  const q=FS.query(FS.collection(db,"orders"),FS.where("closesAt",">",Date.now()),FS.orderBy("closesAt"));
+  unsub=FS.onSnapshot(q,snap=>{
+    orders=snap.docs.map(d=>({...d.data(),id:d.id}));renderOrders();
+    if(!first)snap.docChanges().forEach(c=>{if(c.type==="added"&&c.doc.data().uid!==user.uid)notifyOrder(c.doc.data(),c.doc.id)});
+    first=false;
+  },e=>{$("oMsg").textContent="Couldn’t load orders ("+(e.code||"error")+")."});
+}
+function enterBoard(){view("gIn");$("hello").textContent="Hi, "+profile.nickname+" 👋";$("notifyChk").checked=notifyOn();if(!unsub)subscribe()}
+async function onUser(u){
+  user=u;if(unsub){unsub();unsub=null}orders=[];
+  if(!u){profile=null;view("gOut");return}
+  try{const s=await FS.getDoc(FS.doc(db,"profiles",u.uid));profile=s.exists()?s.data():null}catch(e){profile=null}
+  profile?enterBoard():view("gProfile");
+}
+$("signIn").onclick=async()=>{
+  const p=new AU.GoogleAuthProvider();
+  try{await AU.signInWithPopup(auth,p)}
+  catch(e){
+    if(e.code==="auth/popup-blocked")AU.signInWithRedirect(auth,p);
+    else if(e.code!=="auth/popup-closed-by-user"&&e.code!=="auth/cancelled-popup-request")toast("Sign-in failed ("+(e.code||"error")+")",3500);
+  }
+};
+$("signOut").onclick=()=>AU.signOut(auth);
+$("editProf").onclick=()=>{$("pNick").value=profile.nickname;$("pPhone").value="+"+profile.phone;$("pConsent").checked=true;view("gProfile")};
+$("profSave").onclick=async()=>{
+  const nick=$("pNick").value.trim(),ph=normPhone($("pPhone").value),m=$("pMsg");
+  if(nick.length<2||nick.length>20){m.textContent="Nickname must be 2 to 20 characters.";return}
+  if(!ph){m.textContent="Enter a valid WhatsApp number, e.g. 012-345 6789.";return}
+  if(!$("pConsent").checked){m.textContent="Please tick the box to agree.";return}
+  const np=askPerm();
   try{
-    if(gdb){ await gdb.collection("orders").add(o); }
-    else { o.id="l"+Date.now(); orders.push(o); svLocal(orders); renderOrders(); }
-    $("oName").value=""; $("oLink").value=""; toast("Order posted 🎉");
-  }catch(e){ msg.textContent=e&&e.code==="invalid_argument"?"You need Contributor access to post on the shared board.":"Couldn’t post. Please try again."; }
+    await FS.setDoc(FS.doc(db,"profiles",user.uid),{nickname:nick,phone:ph,updatedAt:Date.now()});
+    profile={nickname:nick,phone:ph};m.textContent="";
+    if(ls.get("jm_notify")===null)ls.set("jm_notify","1");
+    await np;enterBoard();
+  }catch(e){m.textContent="Couldn’t save. Please try again."}
+};
+$("postBtn").onclick=async()=>{
+  const m=$("oMsg"),name=$("oName").value.trim(),link=safeUrl($("oLink").value.trim()),t=new Date($("oTime").value).getTime();
+  if(!name){m.textContent="Give your order a name.";return}
+  if(!link||!/^https:\/\//.test(link)){m.textContent="Paste a full https:// link.";return}
+  if(!(t>Date.now())){m.textContent="Pick a closing time in the future.";return}
+  m.textContent="";$("postBtn").disabled=true;
+  try{
+    await FS.addDoc(FS.collection(db,"orders"),{name:name.slice(0,60),link:link.slice(0,500),closesAt:t,uid:user.uid,nickname:profile.nickname,phone:profile.phone,createdAt:Date.now()});
+    $("oName").value="";$("oLink").value="";toast("Order posted 🎉");
+  }catch(e){m.textContent="Couldn’t post. Please try again."}
+  $("postBtn").disabled=false;
 };
 (function(){const d=new Date(Date.now()+3600000);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$("oTime").value=d.toISOString().slice(0,16)})();
 setInterval(renderOrders,30000);
-(async()=>{
+async function initBoard(){
+  if(!ready){view("gSetup");return}
   try{
-    const [d,u]=await Promise.all([claude.use("db"),claude.use("user")]);
-    if(u) me=await u.id();
-    if(d){
-      gdb=d; orders=[];
-      $("boardNote").textContent="Shared board: everyone with access to this page sees these orders. Posts disappear after their closing time.";
-      d.collection("orders").onSnapshot(s=>{orders=s.docs.map(x=>({...x.data(),id:x.id}));renderOrders();},()=>{});
-    }
-  }catch(e){}
-})();
+    const base="https://www.gstatic.com/firebasejs/10.12.2/";
+    const [A,Au,Fs]=await Promise.all([import(base+"firebase-app.js"),import(base+"firebase-auth.js"),import(base+"firebase-firestore.js")]);
+    const app=A.initializeApp(firebaseConfig);AU=Au;FS=Fs;auth=Au.getAuth(app);db=Fs.getFirestore(app);
+    Au.onAuthStateChanged(auth,onUser);
+  }catch(e){view("gSetup");$("setupMsg").textContent="Couldn’t connect to the board. Check your internet and Firebase setup."}
+}
+try{navigator.serviceWorker.register("sw.js")}catch(e){}
 
-renderMeals(); drawWheel(); renderSaved(); renderTypes(); renderOrders(); refreshNear();
+renderMeals();renderTypes();drawWheel();renderSaved();refreshNear();$("spin").onclick=spin;initBoard();
 </script>
 </body>
 </html>
