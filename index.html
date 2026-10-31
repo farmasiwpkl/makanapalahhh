@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Makan apa-lahhh!</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#DFF2FF; --sun:#FFD34E; --coral:#FF8C70; --mint:#D7F3E4; --lav:#E9E2FF; --navy:#203D68;
+  --bg:#DFF2FF; --card:#ffffff; --text:#203D68; --muted:#52688a; --line:#c9dcef;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#14233b;--card:#1d3355;--text:#eaf3ff;--muted:#a9bdd9;--line:#2f4a75}
+}
+:root[data-theme="dark"]{--bg:#14233b;--card:#1d3355;--text:#eaf3ff;--muted:#a9bdd9;--line:#2f4a75}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:16px}
+h1,h2{font-family:"Baloo 2",system-ui,sans-serif;line-height:1.1;margin:0}
+header{text-align:center;padding:8px 0 4px}
+h1{font-size:clamp(40px,12vw,56px);font-weight:800;color:var(--navy)}
+@media (prefers-color-scheme:dark){h1{color:var(--sun)}}
+h1 span{color:var(--coral)}
+.tag{display:inline-block;background:var(--navy);color:#fff;border-radius:8px;padding:2px 14px;font-weight:700;margin:6px 0}
+.sub{color:var(--muted);margin:4px 0 0}
+.card{background:var(--card);border-radius:22px;padding:16px;margin-top:14px;box-shadow:0 4px 14px rgba(32,61,104,.10)}
+.label{font-weight:700;font-size:14px;margin:0 0 8px;color:var(--muted)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:44px;padding:0 16px;border-radius:999px;border:2px solid var(--line);background:var(--lav);color:#203D68;font:inherit;font-weight:700;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chip[aria-pressed="true"]::before{content:"✓ "}
+input[type=text]{width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;background:var(--card);color:var(--text)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.hint{font-size:13px;color:var(--muted);margin:6px 0 0}
+.wheelbox{position:relative;max-width:340px;margin:8px auto 0}
+.wheelbox canvas{width:100%;height:auto;display:block;border-radius:50%;box-shadow:0 6px 18px rgba(32,61,104,.25);border:6px solid var(--navy)}
+.pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:30px solid var(--coral);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));z-index:2}
+.hub{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:24px;border:4px solid #fff}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:16px;border:0;font:inherit;font-weight:800;font-size:18px;cursor:pointer;text-decoration:none;text-align:center}
+.primary{background:var(--navy);color:#fff}
+.sun{background:var(--sun);color:#203D68}
+.coral{background:var(--coral);color:#203D68}
+.ghost{background:var(--lav);color:#203D68;font-size:16px;font-weight:700}
+.btn:disabled{opacity:.6;cursor:wait}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+#result{background:var(--mint);color:#203D68;text-align:center}
+#result .big{font-family:"Baloo 2",system-ui,sans-serif;font-size:34px;font-weight:800;line-height:1.1;margin:4px 0}
+#result .emoji{font-size:48px}
+#result .small{font-size:14px;margin:0}
+.saved-item{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding:8px 0}
+.saved-item:first-of-type{border-top:0}
+.saved-item a{color:var(--text);font-weight:700}
+.saved-item button{min-height:44px;min-width:44px;border:0;background:transparent;font-size:18px;cursor:pointer;color:var(--text)}
+footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:84px;border-radius:18px;padding:10px;text-decoration:none;color:#203D68;font-weight:800;text-align:center;box-shadow:0 3px 10px rgba(32,61,104,.12)}
+.nav a span{font-size:28px}
+.small{font-size:14px;margin:0}
+.lab{display:block;font-weight:700;font-size:14px;margin:12px 0 6px;color:#203D68}
+.order{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;margin-top:8px;color:#203D68}
+.acts{display:flex;gap:6px;flex-shrink:0}
+.acts .btn{width:auto;min-height:44px;padding:0 14px;font-size:15px}
+.empty{border:2px dashed #b9c6e6;border-radius:16px;padding:16px;text-align:center;background:#fff;margin-top:12px;color:#52688a}
+#group .hint{color:#4a5f80}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Makan apa-<span>lahhh!</span></h1>
+    <div class="tag">Tak tahu makan apa hari ni? 🤔</div>
+    <p class="sub">Less thinking. More eating. 😋</p>
+  </header>
+  <nav class="nav" aria-label="Quick actions">
+    <a href="#locate" style="background:#CFE8FA"><span>📍</span>Locate Me</a>
+    <a href="#types" style="background:#FFD9D2"><span>🍴</span>Food Type</a>
+    <a href="#wheelCard" style="background:#FFE59A"><span>🎲</span>Surprise Me</a>
+    <a href="#group" style="background:#E9E2FF"><span>👥</span>Group Orders</a>
+  </nav>
+
+  <section class="card" aria-labelledby="mealLabel">
+    <p class="label" id="mealLabel">What are you eating?</p>
+    <div class="chips" id="meals" role="group" aria-labelledby="mealLabel"></div>
+    <p class="label" style="margin-top:14px"><label for="area">Where? <span style="font-weight:400">(optional)</span></label></p>
+    <input type="text" id="area" placeholder="Leave blank to use “near me”" autocomplete="off">
+    <p class="hint">Type an area like “Jalan Duta” if you want to search somewhere else.</p>
+  </section>
+
+  <section class="card" id="locate">
+    <h2 style="font-size:24px">📍 Locate Me</h2>
+    <p class="small" style="margin:6px 0 12px">Tap the button and your browser will ask to share your location. It’s only used to open Google Maps around you. Nothing is stored.</p>
+    <button class="btn sun" id="locBtn">📍 Use my location</button>
+    <p class="hint" id="locMsg" role="status"></p>
+    <a class="btn ghost" id="nearBtn" href="#" target="_blank" rel="noopener" style="margin-top:8px">🍴 Browse eateries nearby</a>
+  </section>
+
+  <section class="card" id="types">
+    <h2 style="font-size:24px">🍴 Pick a food type</h2>
+    <div class="chips" id="types2" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card" id="wheelCard" aria-labelledby="spinTitle">
+    <h2 id="spinTitle" style="font-size:24px;text-align:center">Spin the wheel!</h2>
+    <div class="wheelbox">
+      <div class="pointer" aria-hidden="true"></div>
+      <canvas id="wheel" width="680" height="680" role="img" aria-label="Food wheel"></canvas>
+      <div class="hub" aria-hidden="true">🍽️</div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn sun" id="spin">🎡 Surprise Me!</button>
+    </div>
+  </section>
+
+  <section class="card" id="result" aria-live="polite" hidden>
+    <div class="emoji" id="rEmoji"></div>
+    <p class="small" id="rCat"></p>
+    <div class="big" id="rDish"></div>
+    <p class="small" id="rNote">Tap below to see places nearby.</p>
+    <div style="margin-top:14px">
+      <a class="btn primary" id="mapBtn" href="#" target="_blank" rel="noopener">📍 Find it on Google Maps</a>
+    </div>
+    <div class="row">
+      <button class="btn ghost" id="saveBtn">♡ Save</button>
+      <button class="btn ghost" id="skipBtn">⏭ Skip</button>
+    </div>
+  </section>
+
+  <section class="card" id="group" style="background:#E9E2FF;color:#203D68">
+    <p class="small" style="font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a6fa5">Eat together, order together</p>
+    <h2 style="font-size:28px">Group orders</h2>
+    <p class="small" style="margin-top:6px">Share a GrabFood or other group order link, choose when to close it, and let everyone know when to add their food.</p>
+    <label class="lab" for="oName">Order name</label>
+    <input type="text" id="oName" placeholder="e.g. Friday lunch" maxlength="60">
+    <label class="lab" for="oLink">Group order link</label>
+    <input type="text" id="oLink" inputmode="url" placeholder="Paste a https:// link">
+    <label class="lab" for="oTime">Order closes at</label>
+    <input type="datetime-local" id="oTime" style="width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;background:var(--card);color:var(--text)">
+    <div style="margin-top:12px"><button class="btn primary" id="postBtn">＋ Post order</button></div>
+    <p class="hint" id="oMsg" role="alert"></p>
+    <div id="orderList"></div>
+    <p class="hint" id="boardNote">Saved on this device only. The shared board isn’t available in this view.</p>
+  </section>
+
+  <section class="card" id="savedCard" hidden>
+    <h2 style="font-size:22px;margin-bottom:6px">❤️ My saved food</h2>
+    <div id="savedList"></div>
+  </section>
+
+  <footer>Free • no login • your saved list stays on this phone only</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+// ---------- Food data: edit freely ----------
+// meals: b = breakfast, l = lunch, d = dinner
+const FOOD = {
+  "Rice":     {e:"🍚", dishes:[["Nasi lemak","bld"],["Nasi ayam","ld"],["Nasi campur","ld"],["Nasi kandar","ld"],["Nasi goreng","bld"],["Nasi kerabu","bl"]]},
+  "Noodles":  {e:"🍜", dishes:[["Mee goreng mamak","bld"],["Laksa","ld"],["Mee kari","bl"],["Pan mee","bl"],["Wantan mee","bld"],["Kuey teow goreng","ld"],["Mee rebus","bl"]]},
+  "Chicken":  {e:"🍗", dishes:[["Ayam goreng","ld"],["Chicken rice","ld"],["Ayam percik","ld"],["Satay","d"],["Korean fried chicken","d"]]},
+  "Healthy":  {e:"🥗", dishes:[["Salad bowl","ld"],["Grilled chicken bowl","ld"],["Yong tau foo","ld"],["Poke bowl","ld"],["Bubur ayam","bl"]]},
+  "Roti & Bites": {e:"🥪", dishes:[["Roti canai","bd"],["Roti telur","b"],["Roti bakar kaya","b"],["Dim sum","bl"],["Popiah","d"],["Capati","bd"]]},
+  "Soup":     {e:"🍲", dishes:[["Soto ayam","ld"],["Bak kut teh","bld"],["Sup tulang","d"],["Tom yam","ld"],["Sup kambing","ld"]]},
+  "Western":  {e:"🍔", dishes:[["Burger","ld"],["Pasta","ld"],["Sandwich","bl"],["Steak","d"],["Fish and chips","ld"],["Pancakes","b"]]}
+};
+const SURPRISE = "Surprise Special";
+const COLORS = ["#FFD34E","#FF8C70","#D7F3E4","#E9E2FF","#DFF2FF","#FFE59A","#FFB3A0","#BFE8D2"];
+const MEALS = [["b","🍳 Breakfast"],["l","🥘 Lunch"],["d","🌙 Dinner"],["a","🍽️ Anytime"]];
+
+// ---------- State ----------
+let meal = (()=>{const h=new Date().getHours();return h<11?"b":h<16?"l":"d"})();
+let rot = 0, spinning = false, current = null;
+const skipped = new Set();
+const $ = id => document.getElementById(id);
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---------- Helpers ----------
+function dishesFor(cat){
+  const cats = cat===SURPRISE ? Object.keys(FOOD) : [cat];
+  let out=[];
+  cats.forEach(c=>FOOD[c].dishes.forEach(([n,m])=>{
+    if(meal==="a"||m.includes(meal)) out.push({name:n,cat:c});
+  }));
+  return out;
+}
+function segments(){
+  const s = Object.keys(FOOD).filter(c=>dishesFor(c).length>0);
+  s.push(SURPRISE);
+  return s;
+}
+function emoji(c){return c===SURPRISE?"🎁":FOOD[c].e}
+let loc = null;
+function mapUrl(dish){
+  const area = $("area").value.trim();
+  if(!area && loc) return "https://www.google.com/maps/search/" + encodeURIComponent(dish) + "/@" + loc.lat.toFixed(5) + "," + loc.lng.toFixed(5) + ",15z";
+  const q = dish + (area ? " near " + area : " near me");
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+}
+function store(get,val){
+  try{ if(get) return JSON.parse(localStorage.getItem("jm_saved")||"[]"); localStorage.setItem("jm_saved",JSON.stringify(val)); }
+  catch(e){ return get?[]:null; }
+}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),1800)}
+
+// ---------- Wheel ----------
+function drawWheel(){
+  const c=$("wheel"), ctx=c.getContext("2d"), n=segments().length, S=c.width, r=S/2, a=2*Math.PI/n;
+  ctx.clearRect(0,0,S,S);
+  segments().forEach((cat,i)=>{
+    const start=-Math.PI/2+i*a;
+    ctx.beginPath(); ctx.moveTo(r,r); ctx.arc(r,r,r,start,start+a); ctx.closePath();
+    ctx.fillStyle=COLORS[i%COLORS.length]; ctx.fill();
+    ctx.strokeStyle="#fff"; ctx.lineWidth=4; ctx.stroke();
+    ctx.save(); ctx.translate(r,r); ctx.rotate(start+a/2);
+    ctx.fillStyle="#203D68"; ctx.textAlign="right"; ctx.textBaseline="middle";
+    ctx.font="700 34px system-ui,sans-serif";
+    ctx.fillText((cat===SURPRISE?"Surprise":cat)+" "+emoji(cat), r-26, 0);
+    ctx.restore();
+  });
+}
+function resetWheel(){
+  const c=$("wheel"); c.style.transition="none"; rot=0; c.style.transform="rotate(0deg)"; c.offsetHeight;
+}
+function spin(){
+  if(spinning) return;
+  const segs=segments(), n=segs.length, size=360/n, idx=Math.floor(Math.random()*n);
+  const jitter=(Math.random()-0.5)*size*0.6;
+  const target=-((idx+0.5)*size+jitter);
+  const cur=((rot%360)+360)%360;
+  let delta=((target-cur)%360+360)%360;
+  const turns=reduce?0:360*5;
+  rot+=turns+delta;
+  const dur=reduce?300:4200;
+  const c=$("wheel");
+  c.style.transition=`transform ${dur}ms cubic-bezier(.12,.6,.1,1)`;
+  c.style.transform=`rotate(${rot}deg)`;
+  spinning=true; $("spin").disabled=true; $("spin").textContent="🎡 Spinning…";
+  setTimeout(()=>{
+    spinning=false; $("spin").disabled=false; $("spin").textContent="🎡 Spin Again";
+    showResult(segs[idx]);
+  }, dur+100);
+}
+
+// ---------- Result ----------
+function pick(cat){
+  let pool=dishesFor(cat).filter(d=>!skipped.has(d.name));
+  if(!pool.length){ skipped.clear(); pool=dishesFor(cat); }
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function showResult(cat){
+  const d=pick(cat);
+  current={cat,dish:d.name,realCat:d.cat};
+  renderResult();
+  $("result").scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"});
+}
+function renderResult(){
+  $("result").hidden=false;
+  $("rEmoji").textContent=emoji(current.realCat);
+  $("rCat").textContent=current.cat===SURPRISE?"🎁 Surprise Special":current.cat;
+  $("rDish").textContent=current.dish;
+  $("mapBtn").href=mapUrl(current.dish);
+  const saved=store(true).includes(current.dish);
+  $("saveBtn").textContent=saved?"❤️ Saved":"♡ Save";
+}
+$("area").addEventListener("input",()=>{ if(current) $("mapBtn").href=mapUrl(current.dish); renderSaved(); });
+$("skipBtn").onclick=()=>{
+  skipped.add(current.dish);
+  showResult(current.cat);
+  toast("Skipped — how about this?");
+};
+$("saveBtn").onclick=()=>{
+  let s=store(true);
+  if(s.includes(current.dish)){ s=s.filter(x=>x!==current.dish); toast("Removed from saved"); }
+  else { s.push(current.dish); toast("Saved ❤️"); }
+  store(false,s); renderResult(); renderSaved();
+};
+function renderSaved(){
+  const s=store(true), box=$("savedList");
+  $("savedCard").hidden=!s.length;
+  box.innerHTML="";
+  s.forEach(name=>{
+    const row=document.createElement("div"); row.className="saved-item";
+    const a=document.createElement("a"); a.href=mapUrl(name); a.target="_blank"; a.rel="noopener"; a.textContent="📍 "+name;
+    const b=document.createElement("button"); b.textContent="✕"; b.setAttribute("aria-label","Remove "+name);
+    b.onclick=()=>{store(false,store(true).filter(x=>x!==name)); renderSaved(); if(current) renderResult();};
+    row.append(a,b); box.append(row);
+  });
+}
+
+// ---------- Meal chips ----------
+function renderMeals(){
+  const box=$("meals"); box.innerHTML="";
+  MEALS.forEach(([k,label])=>{
+    const b=document.createElement("button");
+    b.className="chip"; b.textContent=label; b.setAttribute("aria-pressed",String(meal===k));
+    b.onclick=()=>{ meal=k; skipped.clear(); $("result").hidden=true; current=null; renderMeals(); resetWheel(); drawWheel(); };
+    box.append(b);
+  });
+}
+
+$("spin").onclick=spin;
+
+// ---------- Locate Me ----------
+function refreshNear(){ $("nearBtn").href=mapUrl("restaurants"); }
+$("area").addEventListener("input",refreshNear);
+$("locBtn").onclick=()=>{
+  const m=$("locMsg");
+  if(!navigator.geolocation){ m.textContent="Location isn’t available here. Type an area above instead."; return; }
+  $("locBtn").disabled=true; m.textContent="Finding you…";
+  navigator.geolocation.getCurrentPosition(p=>{
+    loc={lat:p.coords.latitude,lng:p.coords.longitude};
+    $("locBtn").disabled=false; $("locBtn").textContent="📍 Location on ✓";
+    m.textContent="Got it! Maps searches will now look around you.";
+    refreshNear(); if(current) $("mapBtn").href=mapUrl(current.dish); renderSaved();
+  },err=>{
+    $("locBtn").disabled=false;
+    m.textContent=err.code===1?"Location was declined. No problem: type your area above, or Maps will use “near me”.":"Couldn’t get your location. Type an area above instead.";
+  },{timeout:10000,maximumAge:60000});
+};
+
+// ---------- Food type ----------
+function renderTypes(){
+  const b=$("types2"); b.innerHTML="";
+  Object.keys(FOOD).forEach(c=>{
+    const x=document.createElement("button"); x.className="chip"; x.textContent=FOOD[c].e+" "+c;
+    x.onclick=()=>{ if(!dishesFor(c).length){toast("No "+c+" for this meal. Try Anytime!");return;} showResult(c); };
+    b.append(x);
+  });
+}
+
+// ---------- Group orders ----------
+let orders=[], gdb=null, me=null;
+function ldLocal(){try{return JSON.parse(localStorage.getItem("jm_orders")||"[]")}catch(e){return[]}}
+function svLocal(a){try{localStorage.setItem("jm_orders",JSON.stringify(a))}catch(e){}}
+orders=ldLocal();
+function safeUrl(u){try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}}
+function fmtLeft(ms){const m=Math.max(1,Math.round(ms/60000));return m<60?m+" min left":Math.floor(m/60)+"h "+(m%60)+"m left"}
+function delOrder(o){
+  if(gdb){ gdb.collection("orders").doc(o.id).delete().catch(()=>toast("Couldn’t delete")); }
+  else { orders=orders.filter(x=>x.id!==o.id); svLocal(orders); renderOrders(); }
+}
+function renderOrders(){
+  const box=$("orderList"); box.innerHTML="";
+  const now=Date.now(), open=orders.filter(o=>o&&o.closesAt>now).sort((a,b)=>a.closesAt-b.closesAt);
+  if(!open.length){ const p=document.createElement("div"); p.className="empty"; p.textContent="No open group orders yet. Start one and share it with your crew!"; box.append(p); return; }
+  open.forEach(o=>{
+    const row=document.createElement("div"); row.className="order";
+    const info=document.createElement("div"), t=document.createElement("strong"), s=document.createElement("div");
+    t.textContent=String(o.name||"Group order"); s.className="small";
+    s.textContent="⏰ "+fmtLeft(o.closesAt-now)+" · closes "+new Date(o.closesAt).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+    info.append(t,s);
+    const acts=document.createElement("div"); acts.className="acts";
+    const href=safeUrl(String(o.link||""));
+    if(href){ const a=document.createElement("a"); a.className="btn coral"; a.href=href; a.target="_blank"; a.rel="noopener noreferrer"; a.textContent="Add my food"; acts.append(a); }
+    if(!gdb || (o.by && o.by===me)){ const d=document.createElement("button"); d.className="btn ghost"; d.textContent="✕"; d.setAttribute("aria-label","Delete "+t.textContent); d.onclick=()=>delOrder(o); acts.append(d); }
+    row.append(info,acts); box.append(row);
+  });
+}
+$("postBtn").onclick=async()=>{
+  const msg=$("oMsg"), name=$("oName").value.trim(), link=safeUrl($("oLink").value.trim()), t=new Date($("oTime").value).getTime();
+  if(!name){msg.textContent="Give your order a name.";return}
+  if(!link){msg.textContent="Paste a full https:// link.";return}
+  if(!(t>Date.now())){msg.textContent="Pick a closing time in the future.";return}
+  msg.textContent="";
+  const o={name:name.slice(0,60),link,closesAt:t,by:me||null,createdAt:Date.now()};
+  try{
+    if(gdb){ await gdb.collection("orders").add(o); }
+    else { o.id="l"+Date.now(); orders.push(o); svLocal(orders); renderOrders(); }
+    $("oName").value=""; $("oLink").value=""; toast("Order posted 🎉");
+  }catch(e){ msg.textContent=e&&e.code==="invalid_argument"?"You need Contributor access to post on the shared board.":"Couldn’t post. Please try again."; }
+};
+(function(){const d=new Date(Date.now()+3600000);d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$("oTime").value=d.toISOString().slice(0,16)})();
+setInterval(renderOrders,30000);
+(async()=>{
+  try{
+    const [d,u]=await Promise.all([claude.use("db"),claude.use("user")]);
+    if(u) me=await u.id();
+    if(d){
+      gdb=d; orders=[];
+      $("boardNote").textContent="Shared board: everyone with access to this page sees these orders. Posts disappear after their closing time.";
+      d.collection("orders").onSnapshot(s=>{orders=s.docs.map(x=>({...x.data(),id:x.id}));renderOrders();},()=>{});
+    }
+  }catch(e){}
+})();
+
+renderMeals(); drawWheel(); renderSaved(); renderTypes(); renderOrders(); refreshNear();
+</script>
+</body>
+</html>
