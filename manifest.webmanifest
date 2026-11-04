@@ -1,0 +1,13 @@
+{
+  "name": "Makan apa-lahhh!",
+  "short_name": "Makan apa?",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#DFF2FF",
+  "theme_color": "#203D68",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

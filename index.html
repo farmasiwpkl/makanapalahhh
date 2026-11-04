@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Makan apa-lahhh!</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#203D68">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#203D68;--sun:#FFD34E;--coral:#FF8C70;--bg:#DFF2FF;--card:#fff;--text:#203D68;--muted:#52688a;--line:#c9dcef;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -61,6 +64,7 @@ footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
 .toast.show{opacity:1}
 .nav a{font-size:14px}
 input[type=file]{width:100%;font:inherit;color:var(--text)}
+textarea{width:100%;border-radius:14px;border:2px solid var(--line);padding:10px 14px;font:inherit;background:var(--card);color:var(--text);resize:vertical}
 summary{cursor:pointer;min-height:44px;display:inline-flex;align-items:center}
 .lock a{color:inherit;font-weight:700}
 .spot{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:10px}
@@ -173,6 +177,17 @@ summary{cursor:pointer;min-height:44px;display:inline-flex;align-items:center}
     <div id="sBoard" hidden>
       <details id="spotForm" style="margin-top:10px">
         <summary class="chip">＋ Recommend a shop</summary>
+        <div style="background:var(--bg);border-radius:16px;padding:12px;margin-top:10px">
+          <p class="small" style="font-weight:800">🔎 Found it on TikTok or Instagram?</p>
+          <p class="hint">Paste the link and the caption. We’ll look for the place name and open Google Maps for you.</p>
+          <label class="lab" for="sSocial">Post link (optional)</label>
+          <input type="text" id="sSocial" inputmode="url" placeholder="TikTok, Instagram, Facebook, YouTube link">
+          <label class="lab" for="sCaption">Caption or text from the post</label>
+          <textarea id="sCaption" rows="3" placeholder="Copy the caption from the post and paste it here"></textarea>
+          <div style="margin-top:10px"><button class="btn ghost" id="sFind">🔎 Find the location</button></div>
+          <p class="hint" id="sFindMsg" role="status"></p>
+          <div id="sFound"></div>
+        </div>
         <label class="lab" for="sName">Shop name</label>
         <input type="text" id="sName" maxlength="60" placeholder="e.g. Nasi Lemak Tanglin">
         <label class="lab" for="sDish">Food you recommend</label>
@@ -245,6 +260,8 @@ const firebaseConfig = {
   messagingSenderId: "226073432598",
   appId: "1:226073432598:web:4a037a4650849e954fdb37"
 };
+// Optional, for notifications while the phone is locked. See FIREBASE_SETUP.md step 6.
+const VAPID_KEY = "PASTE_VAPID_KEY";
 
 // ===== 2) Food data: edit freely. meals: b=breakfast l=lunch d=dinner =====
 const FOOD = {
@@ -404,7 +421,8 @@ $("locYes").onclick=()=>{$("locDlg").close();getLocation()};
 $("locNo").onclick=()=>{$("locDlg").close();$("locMsg").textContent="No problem. Type an area above, or Maps will use “near me”."};
 
 // ===== Group board (Firebase) =====
-let AU,FS,auth,db,user=null,profile=null,unsub=null,orders=[];
+let AU,FS,auth,db,user=null,profile=null,unsub=null,orders=[],appRef=null;
+const FB_BASE="https://www.gstatic.com/firebasejs/10.12.2/";
 const ready=!String(firebaseConfig.apiKey).startsWith("PASTE");
 const view=n=>{["gSetup","gOut","gProfile"].forEach(v=>$(v).hidden=v!==n);$("gBar").hidden=n!=="gIn";["gBoard","sBoard"].forEach(v=>$(v).hidden=n!=="gIn");["gLock","sLock"].forEach(v=>$(v).hidden=n==="gIn")};
 const normPhone=s=>{let d=String(s).replace(/\D/g,"");if(d.startsWith("0"))d="6"+d;return /^\d{9,15}$/.test(d)?d:null};
@@ -423,11 +441,29 @@ async function notifyOrder(o,id){
     try{const reg=await navigator.serviceWorker.getRegistration();if(reg)reg.showNotification(title,{body,tag:"order-"+id});else new Notification(title,{body})}catch(e){}
   }
 }
+async function enablePush(){
+  if(String(VAPID_KEY).startsWith("PASTE")||!appRef||!user)return false;
+  try{
+    const M=await import(FB_BASE+"firebase-messaging.js");
+    if(!(await M.isSupported()))return false;
+    const reg=await navigator.serviceWorker.ready;
+    const token=await M.getToken(M.getMessaging(appRef),{vapidKey:VAPID_KEY,serviceWorkerRegistration:reg});
+    if(!token)return false;
+    await FS.setDoc(FS.doc(db,"fcmTokens",token),{uid:user.uid,createdAt:Date.now()});
+    ls.set("jm_token",token);return true;
+  }catch(e){return false}
+}
+async function disablePush(){
+  const t=ls.get("jm_token");
+  if(t&&FS&&db){try{await FS.deleteDoc(FS.doc(db,"fcmTokens",t))}catch(e){}}
+  ls.set("jm_token","");
+}
 $("notifyChk").onchange=async e=>{
   if(e.target.checked){
     const ok=await askPerm();ls.set("jm_notify","1");
-    toast(ok?"Notifications on 🔔":"Alerts on, but only inside this page (browser notifications are blocked)",3500);
-  }else{ls.set("jm_notify","0");toast("Notifications off")}
+    const pushed=ok&&await enablePush();
+    toast(pushed?"Notifications on 🔔":ok?"Alerts on while this page is open":"Alerts on, but only inside this page (browser notifications are blocked)",3500);
+  }else{await disablePush();ls.set("jm_notify","0");toast("Notifications off")}
 };
 
 const safeUrl=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch(e){return null}};
@@ -461,7 +497,7 @@ function subscribe(){
     first=false;
   },e=>{$("oMsg").textContent="Couldn’t load orders ("+(e.code||"error")+")."});
 }
-function enterBoard(){view("gIn");$("hello").textContent="Hi, "+profile.nickname+" 👋";$("notifyChk").checked=notifyOn();if(!unsub)subscribe();if(!unsubS)subscribeSpots()}
+function enterBoard(){view("gIn");$("hello").textContent="Hi, "+profile.nickname+" 👋";$("notifyChk").checked=notifyOn();if(!unsub)subscribe();if(!unsubS)subscribeSpots();if(notifyOn()&&"Notification" in window&&Notification.permission==="granted")enablePush()}
 async function onUser(u){
   user=u;if(unsub){unsub();unsub=null}orders=[];if(unsubS){unsubS();unsubS=null}if(unsubV){unsubV();unsubV=null}spots=[];myVotes=new Map();
   if(!u){profile=null;view("gOut");return}
@@ -476,7 +512,7 @@ $("signIn").onclick=async()=>{
     else if(e.code!=="auth/popup-closed-by-user"&&e.code!=="auth/cancelled-popup-request")toast("Sign-in failed ("+(e.code||"error")+")",3500);
   }
 };
-$("signOut").onclick=()=>AU.signOut(auth);
+$("signOut").onclick=async()=>{await disablePush();AU.signOut(auth)};
 $("editProf").onclick=()=>{$("pNick").value=profile.nickname;$("pPhone").value="+"+profile.phone;$("pConsent").checked=true;view("gProfile")};
 $("profSave").onclick=async()=>{
   const nick=$("pNick").value.trim(),ph=normPhone($("pPhone").value),m=$("pMsg");
@@ -510,7 +546,7 @@ async function initBoard(){
   try{
     const base="https://www.gstatic.com/firebasejs/10.12.2/";
     const [A,Au,Fs]=await Promise.all([import(base+"firebase-app.js"),import(base+"firebase-auth.js"),import(base+"firebase-firestore.js")]);
-    const app=A.initializeApp(firebaseConfig);AU=Au;FS=Fs;auth=Au.getAuth(app);db=Fs.getFirestore(app);
+    const app=A.initializeApp(firebaseConfig);appRef=app;AU=Au;FS=Fs;auth=Au.getAuth(app);db=Fs.getFirestore(app);
     Au.onAuthStateChanged(auth,onUser);
   }catch(e){view("gSetup");$("setupMsg").textContent="Couldn’t connect to the board. Check your internet and Firebase setup."}
 }
@@ -594,6 +630,8 @@ function spotCard(s,rank){
   const acts=document.createElement("div");acts.className="acts";acts.style.marginTop="8px";
   const link=mapsOk(String(s.mapsLink||""));
   if(link){const a=document.createElement("a");a.className="btn primary";a.href=link;a.target="_blank";a.rel="noopener noreferrer";a.textContent="📍 Maps";acts.append(a)}
+  const pl=socialOk(String(s.postLink||""));
+  if(pl){const a2=document.createElement("a");a2.className="btn ghost";a2.href=pl;a2.target="_blank";a2.rel="noopener noreferrer";a2.textContent="🔗 Post";acts.append(a2)}
   const mine=s.uid===user.uid,v=myVotes.get(s.id);
   const up=mkBtn("👍 "+(s.up||0)),dn=mkBtn("👎 "+(s.down||0));
   up.classList.add("vote");dn.classList.add("vote");
@@ -664,13 +702,14 @@ $("sPost").onclick=async()=>{
   if(dish.length<2){m.textContent="What food do you recommend?";return}
   if(!link){m.textContent="Paste a Google Maps link (google.com/maps or maps.app.goo.gl).";return}
   if(!types.length||types.length>6){m.textContent="Tick 1 to 6 food types.";return}
+  if($("sSocial").value.trim()&&!socialOk($("sSocial").value.trim())){m.textContent="The post link must be a TikTok, Instagram, Facebook, YouTube or similar https link.";return}
   if(!opens!==!closes){m.textContent="Fill both opening and closing time, or leave both empty.";return}
   m.textContent="Saving…";$("sPost").disabled=true;
   try{
     const pf=$("sPhFood").files[0],ps=$("sPhShop").files[0];
     const photoFood=pf?await shrink(pf):"",photoShop=ps?await shrink(ps):"";
-    await FS.addDoc(FS.collection(db,"spots"),{name:name.slice(0,60),dish:dish.slice(0,60),mapsLink:link.slice(0,500),types,photoFood,photoShop,opens,closes,days,uid:user.uid,nickname:profile.nickname,up:0,down:0,score:0,createdAt:Date.now()});
-    ["sName","sDish","sLink","sPhFood","sPhShop","sOpens","sCloses"].forEach(id=>$(id).value="");
+    await FS.addDoc(FS.collection(db,"spots"),{name:name.slice(0,60),dish:dish.slice(0,60),mapsLink:link.slice(0,500),postLink:socialOk($("sSocial").value.trim())||"",types,photoFood,photoShop,opens,closes,days,uid:user.uid,nickname:profile.nickname,up:0,down:0,score:0,createdAt:Date.now()});
+    ["sName","sDish","sLink","sPhFood","sPhShop","sOpens","sCloses","sSocial","sCaption"].forEach(id=>$(id).value="");$("sFound").innerHTML="";$("sFindMsg").textContent="";
     document.querySelectorAll("#sTypes input").forEach(i=>i.checked=false);
     m.textContent="";$("spotForm").open=false;toast("Thanks for recommending! 🙌");
   }catch(e){m.textContent=e.message==="bad"?"That photo couldn’t be read. Try another.":e.message==="big"?"That photo is too detailed. Try another.":"Couldn’t save ("+(e.code||"error")+")."}
@@ -679,6 +718,55 @@ $("sPost").onclick=async()=>{
 $("fOpen").onchange=()=>renderSpots();$("fFav").onchange=()=>renderSpots();
 $("openNow").addEventListener("change",()=>{refreshNear();if(current){$("mapBtn").href=mapUrl(current.dish);renderPicks()}renderSaved()});
 setInterval(()=>{if(user){renderSpots();renderPicks()}},60000);
+
+// ===== Social post helper =====
+const SOCIAL=/(^|\.)(tiktok\.com|instagram\.com|facebook\.com|fb\.watch|fb\.com|youtube\.com|youtu\.be|threads\.net|xiaohongshu\.com|xhslink\.com|x\.com|twitter\.com)$/i;
+const socialOk=u=>{try{const x=new URL(u);return x.protocol==="https:"&&SOCIAL.test(x.hostname)?x.href:null}catch(e){return null}};
+const KEYS={"Rice":/nasi|rice|nasik/i,"Noodles":/\bmee\b|laksa|noodle|kuey teow|pan mee|bihun|mihun/i,"Chicken":/ayam|chicken|satay|sate\b/i,"Healthy":/salad|healthy|poke|bowl/i,"Roti & Bites":/roti|dim sum|popiah|capati|toast|kaya/i,"Soup":/\bsup\b|soup|soto|bak kut teh|tom yam|tomyam/i,"Western":/burger|pasta|steak|sandwich|pancake|fish and chips/i,"Indian":/mamak|thosai|tosai|briyani|biryani|banana leaf|tandoori|naan|murtabak/i,"Halal":/halal/i,"Japanese":/sushi|ramen|katsu|udon|japan|jepun/i,"Korean":/korea|kimchi|tteok|bibimbap|jajang/i,"Arabic":/shawarma|mandi|kebab|arab|falafel|mixed grill/i,"Coffee":/coffee|kopi|cafe|kafe|latte|espresso/i};
+const mapsSearch=q=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q+($("area").value.trim()?" near "+$("area").value.trim():""));
+function placeCandidates(text){
+  const out=[];
+  const add=t=>{t=String(t||"").replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu," ").replace(/https?:\/\/\S+/g," ").replace(/\s+/g," ").trim().replace(/^[:\-–@ ]+|[.,!;:\- ]+$/g,"");
+    if(t.length>=3&&t.length<=70&&!out.some(x=>x.toLowerCase()===t.toLowerCase()))out.push(t)};
+  text.split(/\n+/).forEach(line=>{
+    let m;
+    if(/[📍📌]/u.test(line))add(line.replace(/^.*?[📍📌]/u,"").split(/[#@]/)[0]);
+    if((m=line.match(/\b(?:lokasi|location|loc|alamat|address|located at)\s*[:\-]\s*(.+)/i)))add(m[1].split(/[#@]/)[0]);
+    if((m=line.match(/(?:\bdi|\bat|@)\s+([A-Z][\w'&. -]{2,40})/)))add(m[1].split(/[#@,]/)[0]);
+  });
+  (text.match(/@[\w.]{3,30}/g)||[]).forEach(h=>add(h.slice(1).replace(/[._]+/g," ")));
+  return out.slice(0,5);
+}
+$("sFind").onclick=async()=>{
+  const m=$("sFindMsg"),box=$("sFound");box.innerHTML="";
+  const link=$("sSocial").value.trim();let cap=$("sCaption").value.trim();
+  if(link&&!socialOk(link)){m.textContent="That doesn’t look like a TikTok, Instagram, Facebook, YouTube or similar link.";return}
+  if(!link&&!cap){m.textContent="Paste a post link, the caption, or both.";return}
+  m.textContent="Looking…";
+  if(link&&!cap&&/tiktok\.com/i.test(link)){
+    try{const r=await fetch("https://www.tiktok.com/oembed?url="+encodeURIComponent(link));
+      if(r.ok){const j=await r.json();if(j&&j.title){cap=String(j.title);$("sCaption").value=cap}}}catch(e){}
+  }
+  if(!cap){m.textContent="TikTok and Instagram don’t let apps read their posts, so please copy the caption from the post and paste it above. Tip: open the post and look for a 📍 tag.";}
+  const row=(label,q,useName)=>{
+    const r=document.createElement("div");r.className="pick";
+    const i=document.createElement("strong");i.textContent=label;r.append(i);
+    const acts=document.createElement("div");acts.className="acts";
+    const a=document.createElement("a");a.className="btn coral";a.href=mapsSearch(q);a.target="_blank";a.rel="noopener noreferrer";a.textContent="📍 Maps";acts.append(a);
+    if(useName){const b=document.createElement("button");b.className="btn ghost";b.textContent="Use name";b.onclick=()=>{$("sName").value=label.slice(0,60);toast("Shop name filled in")};acts.append(b)}
+    r.append(acts);box.append(r);
+  };
+  if(link){const r=document.createElement("div");r.className="pick";const t=document.createElement("strong");t.textContent="Open the post";r.append(t);
+    const a=document.createElement("a");a.className="btn ghost";a.href=socialOk(link);a.target="_blank";a.rel="noopener noreferrer";a.textContent="🔗 Open";r.append(a);box.append(r)}
+  if(cap){
+    const c=placeCandidates(cap);c.forEach(x=>row(x,x,true));
+    const whole=cap.replace(/#\S+/g," ").replace(/https?:\/\/\S+/g," ").replace(/\s+/g," ").trim().slice(0,90);
+    if(whole)row("Search the whole caption",whole,false);
+    const hits=Object.keys(KEYS).filter(k=>KEYS[k].test(cap));
+    let ticked=[];document.querySelectorAll("#sTypes input").forEach(i=>{if(hits.includes(i.value)&&!i.checked&&document.querySelectorAll("#sTypes input:checked").length<6){i.checked=true;ticked.push(i.value)}});
+    m.textContent=(c.length?"Possible places found. Tap 📍 Maps to check each one.":"Couldn’t spot a place name in the text. Try the caption search below, or open the post and look for the 📍 tag.")+(ticked.length?" Ticked food types: "+ticked.join(", ")+" (please check).":"")+" Then paste the correct Google Maps link below.";
+  }
+};
 
 renderMeals();renderTypes();drawWheel();renderSaved();refreshNear();renderPlaces();renderSpotForm();$("spin").onclick=spin;initBoard();
 </script>
