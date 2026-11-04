@@ -17,7 +17,7 @@ header{text-align:center;padding:8px 0 4px}
 h1{font-size:clamp(38px,11vw,54px);font-weight:800;color:var(--navy)}h1 span{color:var(--coral)}
 .tag{display:inline-block;background:var(--navy);color:#fff;border-radius:8px;padding:2px 14px;font-weight:700;margin:6px 0}
 .sub{color:var(--muted);margin:4px 0 0}
-.nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.nav{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-top:14px}
 .nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:84px;border-radius:18px;padding:10px;text-decoration:none;color:#203D68;font-weight:800;text-align:center;box-shadow:0 3px 10px rgba(32,61,104,.12)}
 .nav a span{font-size:28px}
 .card{background:var(--card);border-radius:22px;padding:16px;margin-top:14px;box-shadow:0 4px 14px rgba(32,61,104,.10)}
@@ -31,7 +31,7 @@ h1{font-size:clamp(38px,11vw,54px);font-weight:800;color:var(--navy)}h1 span{col
 .chip[aria-pressed="true"]::before{content:"✓ "}
 .chk input{width:20px;height:20px;accent-color:#203D68}
 .chk:has(input:checked){background:var(--sun);border-color:#203D68}
-input[type=text],input[type=datetime-local],input[type=tel]{width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;background:var(--card);color:var(--text)}
+input[type=text],input[type=datetime-local],input[type=tel],input[type=time]{width:100%;min-height:44px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:inherit;background:var(--card);color:var(--text)}
 button:focus-visible,input:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
 .wheelbox{position:relative;max-width:340px;margin:8px auto 0}
 .wheelbox canvas{width:100%;height:auto;display:block;border-radius:50%;box-shadow:0 6px 18px rgba(32,61,104,.25);border:6px solid var(--navy)}
@@ -59,6 +59,22 @@ dialog::backdrop{background:rgba(10,20,40,.6)}
 footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:18px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center;z-index:50}
 .toast.show{opacity:1}
+.nav a{font-size:14px}
+input[type=file]{width:100%;font:inherit;color:var(--text)}
+summary{cursor:pointer;min-height:44px;display:inline-flex;align-items:center}
+.lock a{color:inherit;font-weight:700}
+.spot{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:10px}
+.stop{display:flex;gap:10px;align-items:flex-start}
+.rank{font:800 20px "Baloo 2",system-ui,sans-serif;min-width:44px;height:44px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center}
+.badge{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;margin-top:4px}
+.badge.on{background:#cdf3dc;color:#14532d}.badge.off{background:#ffd9d2;color:#7a1f10}.badge.na{background:#e5e7eb;color:#374151}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pics img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:#ddd}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.tags span{font-size:12px;font-weight:700;background:#E9E2FF;color:#203D68;border-radius:999px;padding:2px 10px}
+.vote[aria-pressed="true"]{outline:3px solid var(--navy)}
+.pick{background:#fff;color:#203D68;border-radius:14px;padding:10px;margin-top:8px;display:flex;justify-content:space-between;gap:8px;align-items:center;text-align:left}
+.pick .btn{width:auto;min-height:44px;padding:0 14px;font-size:15px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -73,6 +89,7 @@ footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
     <a href="#locate" style="background:#CFE8FA"><span>📍</span>Locate Me</a>
     <a href="#types" style="background:#FFD9D2"><span>☑️</span>Food Types</a>
     <a href="#wheelCard" style="background:#FFE59A"><span>🎲</span>Surprise Me</a>
+    <a href="#spots" style="background:#D7F3E4"><span>⭐</span>Top Shops</a>
     <a href="#group" style="background:#E9E2FF"><span>👥</span>Group Orders</a>
   </nav>
 
@@ -82,6 +99,8 @@ footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
     <p class="label" style="margin-top:14px"><label for="area">Where? <span style="font-weight:400">(optional)</span></label></p>
     <input type="text" id="area" placeholder="Leave blank to use “near me”" autocomplete="off">
     <p class="hint">Type an area like “Jalan Duta” to search somewhere else.</p>
+    <label class="chk" style="margin-top:10px"><input type="checkbox" id="openNow" checked> 🟢 Open now only</label>
+    <p class="hint">Adds “open now” to Google Maps searches and filters the community picks below your result.</p>
   </section>
 
   <section class="card" id="locate">
@@ -90,6 +109,10 @@ footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
     <button class="btn sun" id="locBtn">📍 Use my location</button>
     <p class="hint" id="locMsg" role="status"></p>
     <a class="btn ghost" id="nearBtn" href="#" target="_blank" rel="noopener" style="margin-top:8px">🍴 Browse eateries nearby</a>
+    <p class="label" style="margin-top:16px">⭐ My saved places</p>
+    <div class="chips" id="placeList"></div>
+    <div class="row" style="grid-template-columns:2fr 1fr"><input type="text" id="placeName" placeholder="Name, e.g. Office" maxlength="20" aria-label="Place name"><button class="btn ghost" id="placeSave">Save here</button></div>
+    <p class="hint" id="placeMsg" role="status">Find your location or type an area above, then save it for next time.</p>
   </section>
 
   <section class="card" id="types">
@@ -117,19 +140,16 @@ footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
     <p class="small">Tap below to see places nearby.</p>
     <div style="margin-top:14px"><a class="btn primary" id="mapBtn" href="#" target="_blank" rel="noopener">📍 Find it on Google Maps</a></div>
     <div class="row"><button class="btn ghost" id="saveBtn">♡ Save</button><button class="btn ghost" id="skipBtn">⏭ Skip</button></div>
+    <div id="picks" style="margin-top:14px"></div>
   </section>
 
-  <section class="card" id="group">
-    <p class="small" style="font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a6fa5">Eat together, order together</p>
-    <h2 style="font-size:28px">Group orders</h2>
-
+  <section class="card" id="account">
+    <h2 style="font-size:24px">👤 My account</h2>
     <div id="gSetup" hidden><p class="small" style="margin-top:8px">The shared board isn’t connected yet. Follow FIREBASE_SETUP.md, then paste your config into index.html.</p><p class="hint" id="setupMsg"></p></div>
-
     <div id="gOut" hidden>
-      <p class="small" style="margin:6px 0 12px">Sign in with your Google (Gmail) account to see and post group orders.</p>
+      <p class="small" style="margin:6px 0 12px">Sign in with your Google (Gmail) account to recommend shops, vote and join group orders.</p>
       <button class="btn primary" id="signIn">Sign in with Google</button>
     </div>
-
     <div id="gProfile" hidden>
       <p class="small" style="margin-top:6px">One last step. This is what your crew will see.</p>
       <label class="lab" for="pNick">Nickname</label>
@@ -140,10 +160,53 @@ footer{text-align:center;font-size:13px;color:var(--muted);padding:18px 0 8px}
       <div style="margin-top:12px"><button class="btn primary" id="profSave">Save and continue</button></div>
       <p class="hint" id="pMsg" role="alert"></p>
     </div>
-
-    <div id="gIn" hidden>
+    <div id="gBar" hidden>
       <div class="who"><strong id="hello"></strong><span><button class="btn ghost" id="editProf">Edit</button> <button class="btn ghost" id="signOut">Sign out</button></span></div>
-      <label class="chk" style="margin-top:10px;background:#fff"><input type="checkbox" id="notifyChk"> 🔔 Notify me of new group orders</label>
+      <label class="chk" style="margin-top:10px"><input type="checkbox" id="notifyChk"> 🔔 Notify me of new group orders</label>
+    </div>
+  </section>
+
+  <section class="card" id="spots">
+    <h2 style="font-size:26px">⭐ Top shops from our crew</h2>
+    <p class="small" style="margin:6px 0 0">Recommend a shop you love. 👍 moves it up, 👎 moves it down. One vote each, and you can’t vote on your own.</p>
+    <p class="small lock" id="sLock" style="margin-top:10px">🔒 Sign in under <a href="#account">My account</a> to see and add shops.</p>
+    <div id="sBoard" hidden>
+      <details id="spotForm" style="margin-top:10px">
+        <summary class="chip">＋ Recommend a shop</summary>
+        <label class="lab" for="sName">Shop name</label>
+        <input type="text" id="sName" maxlength="60" placeholder="e.g. Nasi Lemak Tanglin">
+        <label class="lab" for="sDish">Food you recommend</label>
+        <input type="text" id="sDish" maxlength="60" placeholder="e.g. Nasi lemak ayam goreng">
+        <label class="lab" for="sLink">Google Maps link</label>
+        <input type="text" id="sLink" inputmode="url" placeholder="Paste a Google Maps link">
+        <p class="label lab" id="sTypesL">Food types that describe this shop</p>
+        <div class="chips" id="sTypes" role="group" aria-labelledby="sTypesL"></div>
+        <label class="lab" for="sPhShop">Shop photo</label>
+        <input type="file" id="sPhShop" accept="image/*">
+        <label class="lab" for="sPhFood">Food photo</label>
+        <input type="file" id="sPhFood" accept="image/*">
+        <div class="row"><div><label class="lab" for="sOpens">Opens</label><input type="time" id="sOpens"></div><div><label class="lab" for="sCloses">Closes</label><input type="time" id="sCloses"></div></div>
+        <p class="hint">Fill both so the app can say “Open now”. Leave empty if you’re not sure.</p>
+        <p class="label lab" id="sDaysL">Open on</p>
+        <div class="chips" id="sDays" role="group" aria-labelledby="sDaysL"></div>
+        <div style="margin-top:12px"><button class="btn primary" id="sPost">Post recommendation</button></div>
+        <p class="hint" id="sFormMsg" role="alert"></p>
+      </details>
+      <div class="chips" style="margin-top:12px">
+        <label class="chk"><input type="checkbox" id="fOpen"> 🟢 Open now</label>
+        <label class="chk"><input type="checkbox" id="fFav"> ❤️ Favourites</label>
+      </div>
+      <details style="margin-top:6px"><summary class="chip">Filter by food type</summary><div class="chips" id="fTypes" style="margin-top:8px"></div></details>
+      <p class="hint" id="sMsg" role="alert"></p>
+      <div id="spotList"></div>
+    </div>
+  </section>
+
+  <section class="card" id="group" style="background:#E9E2FF;color:#203D68">
+    <p class="small" style="font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a6fa5">Eat together, order together</p>
+    <h2 style="font-size:28px">Group orders</h2>
+    <p class="small lock" id="gLock" style="margin-top:8px">🔒 Sign in under <a href="#account">My account</a> to see and post group orders.</p>
+    <div id="gBoard" hidden>
       <label class="lab" for="oName">Order name</label>
       <input type="text" id="oName" placeholder="e.g. Friday lunch" maxlength="60">
       <label class="lab" for="oLink">Group order link</label>
@@ -224,6 +287,7 @@ const segments=()=>[...Object.keys(FOOD).filter(c=>picked.has(c)&&dishesFor(c).l
 const emoji=c=>c===SURPRISE?"🎁":FOOD[c].e;
 function mapUrl(dish){
   const area=$("area").value.trim();
+  if($("openNow")&&$("openNow").checked&&!dish.endsWith("open now"))dish+=" open now";
   if(!area&&loc)return "https://www.google.com/maps/search/"+encodeURIComponent(dish)+"/@"+loc.lat.toFixed(5)+","+loc.lng.toFixed(5)+",15z";
   return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(dish+(area?" near "+area:" near me"));
 }
@@ -271,6 +335,7 @@ function renderResult(){
   $("rCat").textContent=current.cat===SURPRISE?"🎁 Surprise Special":current.cat;
   $("rDish").textContent=current.dish;$("mapBtn").href=mapUrl(current.dish);
   $("saveBtn").textContent=savedList().includes(current.dish)?"❤️ Saved":"♡ Save";
+  renderPicks();
 }
 const savedList=()=>{try{return JSON.parse(ls.get("jm_saved")||"[]")}catch(e){return[]}};
 $("skipBtn").onclick=()=>{skipped.add(current.dish);showResult(current.cat);toast("Skipped. How about this?")};
@@ -341,8 +406,7 @@ $("locNo").onclick=()=>{$("locDlg").close();$("locMsg").textContent="No problem.
 // ===== Group board (Firebase) =====
 let AU,FS,auth,db,user=null,profile=null,unsub=null,orders=[];
 const ready=!String(firebaseConfig.apiKey).startsWith("PASTE");
-const VIEWS=["gSetup","gOut","gProfile","gIn"];
-const view=n=>VIEWS.forEach(v=>$(v).hidden=v!==n);
+const view=n=>{["gSetup","gOut","gProfile"].forEach(v=>$(v).hidden=v!==n);$("gBar").hidden=n!=="gIn";["gBoard","sBoard"].forEach(v=>$(v).hidden=n!=="gIn");["gLock","sLock"].forEach(v=>$(v).hidden=n==="gIn")};
 const normPhone=s=>{let d=String(s).replace(/\D/g,"");if(d.startsWith("0"))d="6"+d;return /^\d{9,15}$/.test(d)?d:null};
 const notifyOn=()=>ls.get("jm_notify")==="1";
 function askPerm(){
@@ -397,9 +461,9 @@ function subscribe(){
     first=false;
   },e=>{$("oMsg").textContent="Couldn’t load orders ("+(e.code||"error")+")."});
 }
-function enterBoard(){view("gIn");$("hello").textContent="Hi, "+profile.nickname+" 👋";$("notifyChk").checked=notifyOn();if(!unsub)subscribe()}
+function enterBoard(){view("gIn");$("hello").textContent="Hi, "+profile.nickname+" 👋";$("notifyChk").checked=notifyOn();if(!unsub)subscribe();if(!unsubS)subscribeSpots()}
 async function onUser(u){
-  user=u;if(unsub){unsub();unsub=null}orders=[];
+  user=u;if(unsub){unsub();unsub=null}orders=[];if(unsubS){unsubS();unsubS=null}if(unsubV){unsubV();unsubV=null}spots=[];myVotes=new Map();
   if(!u){profile=null;view("gOut");return}
   try{const s=await FS.getDoc(FS.doc(db,"profiles",u.uid));profile=s.exists()?s.data():null}catch(e){profile=null}
   profile?enterBoard():view("gProfile");
@@ -452,7 +516,171 @@ async function initBoard(){
 }
 try{navigator.serviceWorker.register("sw.js")}catch(e){}
 
-renderMeals();renderTypes();drawWheel();renderSaved();refreshNear();$("spin").onclick=spin;initBoard();
+// ===== Saved places =====
+let places=[];try{places=JSON.parse(ls.get("jm_places")||"[]").filter(p=>p&&p.n)}catch(e){}
+const savePlaces=()=>ls.set("jm_places",JSON.stringify(places));
+function usePlace(p){
+  if(p.area){$("area").value=p.area;loc=null}else{loc={lat:p.lat,lng:p.lng};$("area").value=""}
+  ls.set("jm_lastplace",p.n);$("locMsg").textContent="Using “"+p.n+"”.";
+  refreshNear();if(current)$("mapBtn").href=mapUrl(current.dish);renderSaved();renderPicks();
+}
+function renderPlaces(){
+  const box=$("placeList");box.innerHTML="";
+  if(!places.length){const t=document.createElement("span");t.className="hint";t.textContent="Nothing saved yet.";box.append(t);return}
+  places.forEach((p,i)=>{
+    const w=document.createElement("span");w.style.cssText="display:inline-flex;gap:2px";
+    const b=document.createElement("button");b.className="chip";b.textContent="📍 "+p.n;b.onclick=()=>usePlace(p);
+    const x=document.createElement("button");x.className="chip";x.textContent="✕";x.setAttribute("aria-label","Delete "+p.n);
+    x.onclick=()=>{places.splice(i,1);savePlaces();renderPlaces()};
+    w.append(b,x);box.append(w);
+  });
+}
+$("placeSave").onclick=()=>{
+  const n=($("placeName").value.trim()||"My place").slice(0,20),area=$("area").value.trim();let p;
+  if(area)p={n,area};else if(loc)p={n,lat:+loc.lat.toFixed(5),lng:+loc.lng.toFixed(5)};
+  else{$("placeMsg").textContent="Tap “Use my location” or type an area first, then save.";return}
+  places=[p,...places.filter(x=>x.n!==n)].slice(0,8);savePlaces();renderPlaces();
+  $("placeName").value="";$("placeMsg").textContent="Saved “"+n+"”. Tap it next time.";
+};
+(function(){const p=places.find(x=>x.n===ls.get("jm_lastplace"));if(p){if(p.area)$("area").value=p.area;else loc={lat:p.lat,lng:p.lng};$("locMsg").textContent="Using your saved place “"+p.n+"”.";refreshNear()}})();
+
+// ===== Community shops =====
+let spots=[],myVotes=new Map(),unsubS=null,unsubV=null,favs=new Set();
+try{favs=new Set(JSON.parse(ls.get("jm_favs")||"[]"))}catch(e){}
+const mapsOk=u=>{try{const x=new URL(u);return x.protocol==="https:"&&/(^|\.)(google\.[a-z.]{2,7}|goo\.gl|g\.page)$/i.test(x.hostname)?x.href:null}catch(e){return null}};
+function isOpen(s){
+  if(!s.opens||!s.closes)return null;
+  const n=new Date(),day=n.getDay(),m=n.getHours()*60+n.getMinutes();
+  const [oh,om]=s.opens.split(":").map(Number),[ch,cm]=s.closes.split(":").map(Number);
+  if([oh,om,ch,cm].some(isNaN))return null;
+  const o=oh*60+om,c=ch*60+cm,days=Array.isArray(s.days)&&s.days.length?s.days:[0,1,2,3,4,5,6];
+  if(o===c)return days.includes(day);
+  if(o<c)return days.includes(day)&&m>=o&&m<c;
+  return (days.includes(day)&&m>=o)||(days.includes((day+6)%7)&&m<c);
+}
+function shrink(file){
+  return new Promise((res,rej)=>{
+    if(!/^image\//.test(file.type))return rej(new Error("bad"));
+    const url=URL.createObjectURL(file),img=new Image();
+    img.onload=()=>{
+      URL.revokeObjectURL(url);let max=560,q=0.62,out="";
+      for(let i=0;i<8;i++){
+        const sc=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");
+        c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));
+        c.getContext("2d").drawImage(img,0,0,c.width,c.height);out=c.toDataURL("image/jpeg",q);
+        if(out.length<=60000)break;q=Math.max(0.35,q-0.08);max=Math.round(max*0.85);
+      }
+      out.length<=70000?res(out):rej(new Error("big"));
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("bad"))};img.src=url;
+  });
+}
+const ranked=()=>[...spots].sort((a,b)=>(b.score||0)-(a.score||0)||(b.createdAt||0)-(a.createdAt||0));
+const mkBtn=(t,cls="ghost")=>{const b=document.createElement("button");b.className="btn "+cls;b.textContent=t;return b};
+const badge=op=>{const b=document.createElement("span");b.className="badge "+(op===true?"on":op===false?"off":"na");b.textContent=op===true?"🟢 Open now":op===false?"🔴 Closed now":"Hours not set";return b};
+function spotCard(s,rank){
+  const el=document.createElement("article");el.className="spot";
+  const top=document.createElement("div");top.className="stop";
+  const rk=document.createElement("div");rk.className="rank";rk.textContent="#"+rank;
+  const h=document.createElement("div"),t=document.createElement("strong"),d=document.createElement("div");
+  t.textContent=String(s.name||"");d.className="small";d.textContent="🍽️ "+String(s.dish||"");
+  h.append(t,d,badge(isOpen(s)));top.append(rk,h);el.append(top);
+  const ph=[s.photoShop,s.photoFood].filter(p=>typeof p==="string"&&p.startsWith("data:image/jpeg;base64,"));
+  if(ph.length){const g=document.createElement("div");g.className="pics";ph.forEach(p=>{const im=document.createElement("img");im.src=p;im.alt="Photo of "+String(s.name||"shop");im.loading="lazy";g.append(im)});el.append(g)}
+  const tg=document.createElement("div");tg.className="tags";
+  (Array.isArray(s.types)?s.types:[]).filter(x=>FOOD[x]).forEach(x=>{const sp=document.createElement("span");sp.textContent=FOOD[x].e+" "+x;tg.append(sp)});el.append(tg);
+  const m=document.createElement("div");m.className="small";
+  m.textContent="👤 Recommended by "+String(s.nickname||"")+(s.opens&&s.closes?" · 🕒 "+s.opens+"–"+s.closes:"");el.append(m);
+  const acts=document.createElement("div");acts.className="acts";acts.style.marginTop="8px";
+  const link=mapsOk(String(s.mapsLink||""));
+  if(link){const a=document.createElement("a");a.className="btn primary";a.href=link;a.target="_blank";a.rel="noopener noreferrer";a.textContent="📍 Maps";acts.append(a)}
+  const mine=s.uid===user.uid,v=myVotes.get(s.id);
+  const up=mkBtn("👍 "+(s.up||0)),dn=mkBtn("👎 "+(s.down||0));
+  up.classList.add("vote");dn.classList.add("vote");
+  up.setAttribute("aria-pressed",String(v===1));dn.setAttribute("aria-pressed",String(v===-1));
+  up.setAttribute("aria-label","Thumbs up");dn.setAttribute("aria-label","Thumbs down");
+  if(mine||v){up.disabled=dn.disabled=true}
+  up.onclick=()=>vote(s,1);dn.onclick=()=>vote(s,-1);
+  const fv=mkBtn(favs.has(s.id)?"❤️":"🤍");fv.setAttribute("aria-label",favs.has(s.id)?"Remove favourite":"Save as favourite");
+  fv.onclick=()=>{favs.has(s.id)?favs.delete(s.id):favs.add(s.id);ls.set("jm_favs",JSON.stringify([...favs]));renderSpots()};
+  acts.append(up,dn,fv);
+  if(mine){const x=mkBtn("✕");x.setAttribute("aria-label","Delete my recommendation");x.onclick=()=>{if(confirm("Delete this recommendation?"))FS.deleteDoc(FS.doc(db,"spots",s.id)).catch(()=>toast("Couldn’t delete"))};acts.append(x)}
+  el.append(acts);return el;
+}
+function renderSpots(){
+  const box=$("spotList");box.innerHTML="";if(!user)return;
+  let list=ranked();
+  if($("fOpen").checked)list=list.filter(s=>isOpen(s)===true);
+  if($("fFav").checked)list=list.filter(s=>favs.has(s.id));
+  const ft=[...document.querySelectorAll("#fTypes input:checked")].map(i=>i.value);
+  if(ft.length)list=list.filter(s=>(s.types||[]).some(t=>ft.includes(t)));
+  if(!list.length){const e=document.createElement("div");e.className="empty";e.textContent=spots.length?"No shops match your filters.":"No shops yet. Be the first to recommend one!";box.append(e);return}
+  list.forEach((s,i)=>box.append(spotCard(s,i+1)));
+}
+function subscribeSpots(){
+  const q=FS.query(FS.collection(db,"spots"),FS.orderBy("score","desc"),FS.limit(60));
+  unsubS=FS.onSnapshot(q,sn=>{spots=sn.docs.map(d=>({...d.data(),id:d.id}));renderSpots();renderPicks()},e=>{$("sMsg").textContent="Couldn’t load shops ("+(e.code||"error")+")."});
+  const vq=FS.query(FS.collection(db,"votes"),FS.where("uid","==",user.uid));
+  unsubV=FS.onSnapshot(vq,sn=>{myVotes=new Map(sn.docs.map(d=>[d.data().spotId,d.data().v]));renderSpots()},()=>{});
+}
+async function vote(s,v){
+  if(myVotes.has(s.id)||s.uid===user.uid)return;
+  try{
+    const b=FS.writeBatch(db);
+    b.set(FS.doc(db,"votes",s.id+"_"+user.uid),{spotId:s.id,uid:user.uid,v});
+    b.update(FS.doc(db,"spots",s.id),v===1?{up:FS.increment(1),score:FS.increment(1)}:{down:FS.increment(1),score:FS.increment(-1)});
+    await b.commit();toast(v===1?"👍 Moved up!":"👎 Moved down");
+  }catch(e){toast("Couldn’t vote ("+(e.code||"error")+")",3000)}
+}
+function renderPicks(){
+  const box=$("picks");if(!box)return;box.innerHTML="";if(!current)return;
+  const note=t=>{const p=document.createElement("p");p.className="small";p.textContent=t;box.append(p)};
+  if(!user||!profile){const p=document.createElement("p");p.className="small";p.append("🔒 ");const a=document.createElement("a");a.href="#account";a.style.color="inherit";a.textContent="Sign in";p.append(a," to see shops recommended by our crew.");box.append(p);return}
+  const onlyOpen=$("openNow").checked;
+  let list=ranked().filter(s=>(s.types||[]).includes(current.realCat));
+  if(onlyOpen)list=list.filter(s=>isOpen(s)===true);
+  const h=document.createElement("p");h.className="small";h.style.fontWeight="800";h.textContent=onlyOpen?"⭐ Top-rated open now from our crew":"⭐ Top-rated from our crew";box.append(h);
+  if(!list.length){note(onlyOpen?"No crew pick for this type is open right now. Try Google Maps above, or add one in Top Shops!":"No crew picks for this type yet. Add one in Top Shops!");return}
+  list.slice(0,3).forEach(s=>{
+    const r=document.createElement("div");r.className="pick";
+    const i=document.createElement("div"),t=document.createElement("strong"),d=document.createElement("div");
+    t.textContent=String(s.name||"");d.className="small";d.textContent=String(s.dish||"")+" · 👍 "+((s.up||0)-(s.down||0))+" net";
+    i.append(t,d,badge(isOpen(s)));r.append(i);
+    const l=mapsOk(String(s.mapsLink||""));
+    if(l){const a=document.createElement("a");a.className="btn coral";a.href=l;a.target="_blank";a.rel="noopener noreferrer";a.textContent="📍 Maps";r.append(a)}
+    box.append(r);
+  });
+}
+function renderSpotForm(){
+  const mk=(box,cb)=>Object.keys(FOOD).forEach(c=>{const l=document.createElement("label"),i=document.createElement("input");l.className="chk";i.type="checkbox";i.value=c;if(cb)i.onchange=cb;l.append(i,document.createTextNode(FOOD[c].e+" "+c));box.append(l)});
+  mk($("sTypes"));mk($("fTypes"),renderSpots);
+  [["Mon",1],["Tue",2],["Wed",3],["Thu",4],["Fri",5],["Sat",6],["Sun",0]].forEach(([n,v])=>{const l=document.createElement("label"),i=document.createElement("input");l.className="chk";i.type="checkbox";i.value=v;i.checked=true;l.append(i,document.createTextNode(n));$("sDays").append(l)});
+}
+$("sPost").onclick=async()=>{
+  const m=$("sFormMsg"),name=$("sName").value.trim(),dish=$("sDish").value.trim(),link=mapsOk($("sLink").value.trim());
+  const types=[...document.querySelectorAll("#sTypes input:checked")].map(i=>i.value);
+  const days=[...document.querySelectorAll("#sDays input:checked")].map(i=>+i.value),opens=$("sOpens").value,closes=$("sCloses").value;
+  if(name.length<2){m.textContent="Enter the shop name.";return}
+  if(dish.length<2){m.textContent="What food do you recommend?";return}
+  if(!link){m.textContent="Paste a Google Maps link (google.com/maps or maps.app.goo.gl).";return}
+  if(!types.length||types.length>6){m.textContent="Tick 1 to 6 food types.";return}
+  if(!opens!==!closes){m.textContent="Fill both opening and closing time, or leave both empty.";return}
+  m.textContent="Saving…";$("sPost").disabled=true;
+  try{
+    const pf=$("sPhFood").files[0],ps=$("sPhShop").files[0];
+    const photoFood=pf?await shrink(pf):"",photoShop=ps?await shrink(ps):"";
+    await FS.addDoc(FS.collection(db,"spots"),{name:name.slice(0,60),dish:dish.slice(0,60),mapsLink:link.slice(0,500),types,photoFood,photoShop,opens,closes,days,uid:user.uid,nickname:profile.nickname,up:0,down:0,score:0,createdAt:Date.now()});
+    ["sName","sDish","sLink","sPhFood","sPhShop","sOpens","sCloses"].forEach(id=>$(id).value="");
+    document.querySelectorAll("#sTypes input").forEach(i=>i.checked=false);
+    m.textContent="";$("spotForm").open=false;toast("Thanks for recommending! 🙌");
+  }catch(e){m.textContent=e.message==="bad"?"That photo couldn’t be read. Try another.":e.message==="big"?"That photo is too detailed. Try another.":"Couldn’t save ("+(e.code||"error")+")."}
+  $("sPost").disabled=false;
+};
+$("fOpen").onchange=()=>renderSpots();$("fFav").onchange=()=>renderSpots();
+$("openNow").addEventListener("change",()=>{refreshNear();if(current){$("mapBtn").href=mapUrl(current.dish);renderPicks()}renderSaved()});
+setInterval(()=>{if(user){renderSpots();renderPicks()}},60000);
+
+renderMeals();renderTypes();drawWheel();renderSaved();refreshNear();renderPlaces();renderSpotForm();$("spin").onclick=spin;initBoard();
 </script>
 </body>
 </html>
